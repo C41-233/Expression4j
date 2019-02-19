@@ -4,9 +4,6 @@ import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.Type;
-import org.objectweb.asm.util.TraceClassVisitor;
-
-import java.io.PrintWriter;
 import java.lang.reflect.Method;
 
 final class ClassEmit<T> {
@@ -24,7 +21,8 @@ final class ClassEmit<T> {
         name = String.valueOf(System.currentTimeMillis());
 
         writer = new ClassWriter(ClassWriter.COMPUTE_FRAMES | ClassWriter.COMPUTE_MAXS);
-        visitor = new TraceClassVisitor(writer, new PrintWriter(System.out));
+        //visitor = new TraceClassVisitor(writer, new PrintWriter(System.out));
+        visitor = writer;
         visitor.visit(
                 Opcodes.V1_8,
                 Opcodes.ACC_PUBLIC | Opcodes.ACC_FINAL,

@@ -42,6 +42,10 @@ abstract class MethodEmit {
         visitor.visitInsn(Opcodes.IADD);
     }
 
+    final void isub(){
+        visitor.visitInsn(Opcodes.ISUB);
+    }
+
     final void ret(){
         visitor.visitInsn(Opcodes.RETURN);
     }
@@ -56,6 +60,10 @@ abstract class MethodEmit {
             return;
         }
         ret();
+    }
+
+    final void getfield(String owner, String name, String descriptor){
+        visitor.visitFieldInsn(Opcodes.GETFIELD,owner, name, descriptor);
     }
 
     final void invokespecial(String owner, String name, String descriptor){

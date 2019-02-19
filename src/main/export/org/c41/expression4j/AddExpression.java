@@ -1,8 +1,6 @@
 package org.c41.expression4j;
 
-import org.c41.expression4j.annotations.ValueExpression;
-
-public class AddExpression extends BinaryExpression implements ValueExpression {
+public class AddExpression extends BinaryExpression{
 
     AddExpression(Expression left, Expression right) {
         super(left, right);

@@ -3,15 +3,20 @@ import org.c41.expression4j.Parameter;
 
 public class TestMain {
 
-    public static interface Run{
-        int run(int x, int y);
+    public static class My{
+        public int value = 5;
     }
 
-    public static void main(String[] args){
-        Parameter x = Expressions.parameter(int.class);
-        Parameter y = Expressions.parameter(int.class);
-        Run r = Expressions.complie(Run.class, Expressions.add(x, y), x, y);
-        System.out.println(r.run(100, 7));
+    public static interface Run{
+        int run(My x);
+    }
+
+    public static void main(String[] args) throws Exception {
+        Parameter x = Expressions.parameter(My.class);
+        Run r = Expressions.complie(Run.class,
+            Expressions.field(x, My.class.getField("value")),
+        x);
+        System.out.println(r.run(new My()));
     }
 
 }
