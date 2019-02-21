@@ -7,11 +7,13 @@ import org.objectweb.asm.Type;
 import org.objectweb.asm.util.TraceClassVisitor;
 
 import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.lang.reflect.Method;
 
 final class ClassEmit<T> {
 
     private static final Method DefineClass;
+    private static final StringWriter debug = new StringWriter();
 
     static {
         try {
@@ -22,13 +24,9 @@ final class ClassEmit<T> {
         }
     }
 
-    private static <T> T emit(ClassLoader cl, String name, byte[] bs){
-        try {
-            Class<?> cc = (Class<?>) DefineClass.invoke(cl, name, bs, 0 , bs.length);
-            return (T)cc.newInstance();
-        } catch (ReflectiveOperationException e) {
-            throw CompileExpression.emitFail(e);
-        }
+    private static <T> T emit(ClassLoader cl, String name, byte[] bs) throws Exception{
+        Class<?> cc = (Class<?>) DefineClass.invoke(cl, name, bs, 0 , bs.length);
+        return (T)cc.newInstance();
     }
 
     private final String name;
@@ -41,8 +39,8 @@ final class ClassEmit<T> {
         name = "$" + String.valueOf(System.currentTimeMillis() + hashCode());
 
         writer = new ClassWriter(ClassWriter.COMPUTE_FRAMES | ClassWriter.COMPUTE_MAXS);
-        //visitor = new TraceClassVisitor(writer, new PrintWriter(System.err));
-        visitor = writer;
+        PrintWriter printWriter = new PrintWriter(debug, true);
+        visitor = new TraceClassVisitor(this.writer, printWriter);
 
         visitor.visit(
                 Opcodes.V1_8,
@@ -84,7 +82,11 @@ final class ClassEmit<T> {
         visitor.visitEnd();
 
         byte[] bs = writer.toByteArray();
-        return emit(proxy.getClassLoader(), proxy.getTypeName() + name, bs);
+        try {
+            return emit(proxy.getClassLoader(), proxy.getTypeName() + name, bs);
+        } catch (Throwable e) {
+            throw CompileExpression.emitFail(debug.getBuffer().toString(), e);
+        }
     }
 
 }

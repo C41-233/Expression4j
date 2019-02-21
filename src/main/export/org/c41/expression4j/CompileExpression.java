@@ -9,7 +9,7 @@ public class CompileExpression extends RuntimeException{
         super(msg);
     }
 
-    private CompileExpression(String msg, Exception e) {
+    private CompileExpression(String msg, Throwable e) {
         super(msg, e);
     }
 
@@ -25,18 +25,26 @@ public class CompileExpression extends RuntimeException{
         return new CompileExpression("bad operator");
     }
 
-    public static CompileExpression emitFail(Exception e) {
-        return new CompileExpression("compile fail", e);
+    public static CompileExpression emitFail(String msg, Throwable e) {
+        return new CompileExpression("compile fail\n" + msg, e);
     }
 
-    public static CompileExpression parametersNotMatch(Class<?>[] parameterTypes, ParameterExpression[] parameters) {
+    public static CompileExpression parametersNotMatch(Class<?>[] parameterTypes, Expression[] parameters) {
         StringJoiner joiner1 = new StringJoiner(",", "[", "]");
         for(Class<?> cl : parameterTypes){
-            joiner1.add(cl.toString());
+            joiner1.add(cl.getTypeName());
         }StringJoiner joiner2 = new StringJoiner(",", "[", "]");
-        for(ParameterExpression parameter : parameters){
-            joiner2.add(parameter.getExpressionType().toString());
+        for(Expression parameter : parameters){
+            joiner2.add(parameter.getExpressionType().getTypeName());
         }
         return new CompileExpression("parameter types not match expected " + joiner1 + " actual " + joiner2);
+    }
+
+    public static CompileExpression fieldNotFoundException(Class<System> type, String name) {
+        return new CompileExpression("field " + name + " not found in class " + type);
+    }
+
+    public static CompileExpression badCast(Class<?> from, Class<?> type) {
+        return new CompileExpression(from + " cannot cast to " + type);
     }
 }

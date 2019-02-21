@@ -1,36 +1,56 @@
 package org.c41.expression4j;
 
+import java.lang.reflect.Method;
+
 public class CastExpression extends Expression{
 
     private final Expression expression;
-    private final Class<?> type;
+    private final Class<?> leftType;
 
     CastExpression(Expression expression, Class<?> type){
         this.expression = expression;
-        this.type = type;
+        this.leftType = type;
     }
 
     @Override
     void emit(BodyEmit ctx) {
         expression.emit(ctx);
-        StackType leftType = TypeUtils.getStackType(expression.getExpressionType());
-        if(type == long.class){
-            if(leftType == StackType.Int){
+        StackType rightStackType = TypeUtils.getStackType(expression.getExpressionType());
+        StackType leftStackType = TypeUtils.getStackType(leftType);
+
+        if(leftType == long.class){
+            if(rightStackType == StackType.Int){
                 ctx.i2l();
                 return;
             }
         }
-        else if(type == int.class){
-            if(leftType == StackType.Long){
+        else if(leftType == int.class){
+            if(rightStackType == StackType.Long){
                 ctx.l2i();
                 return;
             }
         }
-        throw CompileExpression.badOperator();
+        else if(leftStackType == StackType.Reference){
+            if(rightStackType == StackType.Reference){
+                return;
+            }
+            else if(leftType.isAssignableFrom(Integer.class)){
+                if(rightStackType == StackType.Int){
+                    try {
+                        Method method = Integer.class.getMethod("valueOf", int.class);
+                        ctx.invokestatic(method);
+                        return;
+                    } catch (NoSuchMethodException e) {
+                        throw CompileExpression.emitFail("cannot find Integer.valueOf", e);
+                    }
+                }
+            }
+        }
+        throw CompileExpression.badCast(expression.getExpressionType(), leftType);
     }
 
     @Override
     public Class<?> getExpressionType() {
-        return type;
+        return leftType;
     }
 }

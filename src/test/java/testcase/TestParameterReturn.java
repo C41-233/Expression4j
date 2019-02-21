@@ -11,7 +11,7 @@ public class TestParameterReturn {
     public void test1(){
         ParameterExpression x = Expressions.parameter(int.class);
         ParameterExpression y = Expressions.parameter(int.class);
-        BinaryInt r = Expressions.complie(BinaryInt.class,
+        FuncIII r = Expressions.complie(FuncIII.class,
             x,
         x, y);
         Assert.assertEquals(100, r.invoke(100, 200));
@@ -22,7 +22,7 @@ public class TestParameterReturn {
     public void test2(){
         ParameterExpression x = Expressions.parameter(int.class);
         ParameterExpression y = Expressions.parameter(int.class);
-        BinaryInt r = Expressions.complie(BinaryInt.class,
+        FuncIII r = Expressions.complie(FuncIII.class,
                 y,
         x, y);
         Assert.assertEquals(200, r.invoke(100, 200));

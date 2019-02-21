@@ -17,10 +17,10 @@ public abstract class BinaryExpression extends Expression{
 
         if(leftType == StackType.Long && rightType == StackType.Int){
             this.liftLeft = left;
-            this.liftRight = new CastExpression(right, long.class);
+            this.liftRight = Expressions.cast(right, long.class);
         }
         else if(rightType == StackType.Long && leftType == StackType.Int){
-            this.liftLeft = new CastExpression(left, long.class);
+            this.liftLeft = Expressions.cast(left, long.class);
             this.liftRight = right;
         }
         else{

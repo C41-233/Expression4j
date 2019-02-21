@@ -1,6 +1,7 @@
 package org.c41.expression4j;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 
 public class Expressions {
 
@@ -22,7 +23,24 @@ public class Expressions {
     }
 
     public static FieldExpression field(Expression self, Field field){
-        return new FieldExpression(self, field);
+        return new MemberFieldExpression(self, field);
+    }
+
+    public static StaticFieldExpression field(Class<System> type, String name) {
+        try {
+            Field field = type.getField(name);
+            return new StaticFieldExpression(field);
+        } catch (NoSuchFieldException e) {
+            throw CompileExpression.fieldNotFoundException(type, name);
+        }
+    }
+
+    public static StringConstantExpression constant(String value){
+        return new StringConstantExpression(value);
+    }
+
+    public static IntConstantExpression constant(int value){
+        return new IntConstantExpression(value);
     }
 
     public static AssignExpression assign(Expression self, Expression value){
@@ -35,5 +53,17 @@ public class Expressions {
 
     public static BlockExpression block(Expression... expressions){
         return new BlockExpression(expressions);
+    }
+
+    public static Expression call(Expression self, Method method, Expression... parameters) {
+        return new MethodCallExpression(self, method, parameters);
+    }
+
+    public static Expression call(Method method, Expression... parameters) {
+        return new StaticCallExpression(method, parameters);
+    }
+
+    public static Expression newArray(Class<?> elementType, Expression length) {
+        return new NewArrayExpression(elementType, length);
     }
 }

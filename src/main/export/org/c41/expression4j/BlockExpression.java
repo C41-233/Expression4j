@@ -10,9 +10,11 @@ public class BlockExpression extends Expression{
 
     @Override
     void emit(BodyEmit ctx) {
+        ctx.pushScope();
         for(Expression expression : expressions){
             expression.emit(ctx);
         }
+        ctx.popScope();
     }
 
     @Override

@@ -21,6 +21,9 @@ final class ParameterStack {
     }
 
     public final void declareParameter(ParameterExpression parameter){
+        if(getParameterSlotInternal(parameter) != null){
+            return;
+        }
         parameters.add(new ParameterSlot(parameter, nextSlot, currentStack));
         nextSlot += TypeUtils.getSlotCount(parameter.getExpressionType());
     }
@@ -43,12 +46,20 @@ final class ParameterStack {
         currentStack--;
     }
 
-    public final int getParameterSlot(ParameterExpression parameter){
+    private final Integer getParameterSlotInternal(ParameterExpression parameter){
         for(int i = parameters.size() -1; i>= 0; --i){
             ParameterSlot slot = parameters.get(i);
             if(slot.parameter == parameter){
                 return slot.slot;
             }
+        }
+        return null;
+    }
+
+    public final int getParameterSlot(ParameterExpression parameter){
+        Integer slot = getParameterSlotInternal(parameter);
+        if(slot != null){
+            return slot;
         }
         throw CompileExpression.parameterNotDeclare(parameter);
     }
