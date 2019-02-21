@@ -34,6 +34,10 @@ public class Expressions {
         return new AssignExpression(self, value);
     }
 
+    public static CastExpression cast(Expression expression, Class<?> type){
+        return new CastExpression(expression, type);
+    }
+
     public static BlockExpression block(Expression... expressions){
         return new BlockExpression(expressions);
     }

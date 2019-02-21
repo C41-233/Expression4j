@@ -5,6 +5,7 @@ import org.c41.expression4j.ParameterExpression;
 import org.junit.Assert;
 import org.junit.Test;
 import types.BinaryInt;
+import types.BinaryLong;
 
 public class TestCalculate {
 
@@ -35,6 +36,17 @@ public class TestCalculate {
         ParameterExpression x = Expressions.parameter(int.class);
         ParameterExpression y = Expressions.parameter(int.class);
         BinaryInt r = Expressions.complie(BinaryInt.class,
+                Expressions.add(x, Expressions.subtract(x, y)),
+                x, y);
+        Assert.assertEquals(100 + 100 - 200 , r.invoke(100, 200));
+        Assert.assertEquals(200 + 200 - 100, r.invoke(200, 100));
+    }
+
+    @Test
+    public void test4(){
+        ParameterExpression x = Expressions.parameter(long.class);
+        ParameterExpression y = Expressions.parameter(long.class);
+        BinaryLong r = Expressions.complie(BinaryLong.class,
                 Expressions.add(x, Expressions.subtract(x, y)),
                 x, y);
         Assert.assertEquals(100 + 100 - 200 , r.invoke(100, 200));

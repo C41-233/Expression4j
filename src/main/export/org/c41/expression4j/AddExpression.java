@@ -8,6 +8,6 @@ public class AddExpression extends BinaryExpression{
 
     @Override
     void emitOpCode(BodyEmit ctx) {
-        ctx.iadd();
+        ctx.tadd(getExpressionType());
     }
 }

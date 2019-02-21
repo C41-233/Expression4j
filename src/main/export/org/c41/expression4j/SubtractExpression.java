@@ -8,6 +8,6 @@ public class SubtractExpression extends BinaryExpression{
 
     @Override
     void emitOpCode(BodyEmit ctx) {
-        ctx.isub();
+        ctx.tsub(getExpressionType());
     }
 }

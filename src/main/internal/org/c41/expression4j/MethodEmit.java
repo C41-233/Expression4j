@@ -28,12 +28,25 @@ abstract class MethodEmit {
         visitor.visitVarInsn(Opcodes.ILOAD, n);
     }
 
+    public final void lload(int n){
+        visitor.visitVarInsn(Opcodes.LLOAD, n);
+    }
+
     public final void tload(int n, Class<?> type){
-        if(TypeUtils.isIntType(type)){
-            iload(n);
-        }
-        else{
-            aload(n);
+        switch (TypeUtils.getStackType(type)){
+            case Int:
+                iload(n);
+                break;
+            case Long:
+                lload(n);
+                break;
+            case Float:
+                break;
+            case Double:
+                break;
+            case Reference:
+                aload(n);
+                break;
         }
     }
 
@@ -41,8 +54,60 @@ abstract class MethodEmit {
         visitor.visitInsn(Opcodes.IADD);
     }
 
+    public final void ladd(){
+        visitor.visitInsn(Opcodes.LADD);
+    }
+
+    public final void fadd(){
+        visitor.visitInsn(Opcodes.FADD);
+    }
+
+    public final void dadd(){
+        visitor.visitInsn(Opcodes.DADD);
+    }
+
+    public final void tadd(Class<?> type){
+        switch (TypeUtils.getStackType(type)){
+            case Int:
+                iadd();
+                break;
+            case Long:
+                ladd();
+                break;
+            case Float:
+                fadd();
+                break;
+            case Double:
+                dadd();
+                break;
+            case Reference:
+                throw CompileExpression.badOperator();
+        }
+    }
+
     public final void isub(){
         visitor.visitInsn(Opcodes.ISUB);
+    }
+
+    public final void lsub(){
+        visitor.visitInsn(Opcodes.LSUB);
+    }
+
+    public final void tsub(Class<?> type){
+        switch (TypeUtils.getStackType(type)){
+            case Int:
+                isub();
+                break;
+            case Long:
+                lsub();
+                break;
+            case Float:
+                break;
+            case Double:
+                break;
+            case Reference:
+                throw CompileExpression.badOperator();
+        }
     }
 
     public final void ret(){
@@ -53,12 +118,29 @@ abstract class MethodEmit {
         visitor.visitInsn(Opcodes.IRETURN);
     }
 
+    public final void lret(){
+        visitor.visitInsn(Opcodes.LRETURN);
+    }
+
     final void tret(Class<?> type){
-        if(TypeUtils.isIntType(type)){
-            iret();
+        if(type == null || type == void.class){
+            ret();
             return;
         }
-        ret();
+        switch (TypeUtils.getStackType(type)){
+            case Int:
+                iret();
+                break;
+            case Long:
+                lret();
+                break;
+            case Float:
+                break;
+            case Double:
+                break;
+            case Reference:
+                break;
+        }
     }
 
     public final void getfield(String owner, String name, String descriptor){
@@ -67,6 +149,10 @@ abstract class MethodEmit {
 
     public final void putField(String owner, String name, String descriptor){
        visitor.visitFieldInsn(Opcodes.PUTFIELD, owner, name, descriptor);
+    }
+
+    public final void i2l(){
+        visitor.visitInsn(Opcodes.I2L);
     }
 
     public final void invokespecial(String owner, String name, String descriptor){

@@ -14,4 +14,8 @@ public class CompileExpression extends RuntimeException{
     public static CompileExpression writeValueExpression() {
         return new CompileExpression("value expression cannot assign");
     }
+
+    public static CompileExpression badOperator() {
+        return new CompileExpression("bad operator");
+    }
 }
