@@ -4,11 +4,6 @@ import java.lang.reflect.Field;
 
 public class Expressions {
 
-    public static <TLambda> TLambda complie(Class<TLambda> lambdaClass, BlockExpression body, ParameterExpression... parameters){
-        ClassEmit<TLambda> cl = new ClassEmit<>(lambdaClass);
-        return cl.emit(body, parameters);
-    }
-
     public static <TLambda> TLambda complie(Class<TLambda> lambdaClass, Expression body, ParameterExpression... parameters){
         ClassEmit<TLambda> cl = new ClassEmit<>(lambdaClass);
         return cl.emit(body, parameters);

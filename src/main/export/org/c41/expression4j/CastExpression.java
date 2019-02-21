@@ -12,10 +12,17 @@ public class CastExpression extends Expression{
 
     @Override
     void emit(BodyEmit ctx) {
+        expression.emit(ctx);
         StackType leftType = TypeUtils.getStackType(expression.getExpressionType());
         if(type == long.class){
             if(leftType == StackType.Int){
                 ctx.i2l();
+                return;
+            }
+        }
+        else if(type == int.class){
+            if(leftType == StackType.Long){
+                ctx.l2i();
                 return;
             }
         }

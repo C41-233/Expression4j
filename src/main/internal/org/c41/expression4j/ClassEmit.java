@@ -11,8 +11,25 @@ import java.lang.reflect.Method;
 
 final class ClassEmit<T> {
 
-    private static final String InternalNameBase = "org/c41/expression4j/IMPL";
-    private static final String ClassNameBase = "org.c41.expression4j.IMPL";
+    private static final Method DefineClass;
+
+    static {
+        try {
+            DefineClass = ClassLoader.class.getDeclaredMethod("defineClass", String.class, byte[].class, int.class, int.class);
+            DefineClass.setAccessible(true);
+        } catch (NoSuchMethodException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private static <T> T emit(ClassLoader cl, String name, byte[] bs){
+        try {
+            Class<?> cc = (Class<?>) DefineClass.invoke(cl, name, bs, 0 , bs.length);
+            return (T)cc.newInstance();
+        } catch (ReflectiveOperationException e) {
+            throw CompileExpression.emitFail(e);
+        }
+    }
 
     private final String name;
     private final ClassWriter writer;
@@ -21,15 +38,16 @@ final class ClassEmit<T> {
 
     public ClassEmit(Class<T> proxy){
         this.proxy = proxy;
-        name = String.valueOf(System.currentTimeMillis());
+        name = "$" + String.valueOf(System.currentTimeMillis() + hashCode());
 
         writer = new ClassWriter(ClassWriter.COMPUTE_FRAMES | ClassWriter.COMPUTE_MAXS);
         //visitor = new TraceClassVisitor(writer, new PrintWriter(System.err));
         visitor = writer;
+
         visitor.visit(
                 Opcodes.V1_8,
                 Opcodes.ACC_PUBLIC | Opcodes.ACC_FINAL,
-                InternalNameBase + name,
+                Type.getInternalName(proxy) + name,
                 null,
                 "java/lang/Object",
                 new String[]{Type.getInternalName(proxy)}
@@ -45,6 +63,16 @@ final class ClassEmit<T> {
         //todo
         Method method = proxy.getDeclaredMethods()[0];
 
+        Class<?>[] parameterTypes = method.getParameterTypes();
+        if(parameterTypes.length != parameters.length){
+            throw CompileExpression.parametersNotMatch(parameterTypes, parameters);
+        }
+        for(int i=0; i<parameters.length; i++){
+            if(parameterTypes[i] != parameters[i].getExpressionType()){
+                throw CompileExpression.parametersNotMatch(parameterTypes, parameters);
+            }
+        }
+
         BodyEmit bodyEmit = new BodyEmit(
             visitor,
             method,
@@ -56,14 +84,7 @@ final class ClassEmit<T> {
         visitor.visitEnd();
 
         byte[] bs = writer.toByteArray();
-
-        ExpressionClassLoader cl = new ExpressionClassLoader();
-        try {
-            return (T) cl.emit(ClassNameBase + name, bs).newInstance();
-        } catch (ReflectiveOperationException e) {
-            e.printStackTrace();
-            return null;
-        }
+        return emit(proxy.getClassLoader(), proxy.getTypeName() + name, bs);
     }
 
 }

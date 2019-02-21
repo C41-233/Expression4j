@@ -4,7 +4,6 @@ import org.c41.expression4j.Expressions;
 import org.c41.expression4j.ParameterExpression;
 import org.junit.Assert;
 import org.junit.Test;
-import types.BinaryInt;
 
 public class TestParameterReturn {
 

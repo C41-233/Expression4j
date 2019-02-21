@@ -155,6 +155,10 @@ abstract class MethodEmit {
         visitor.visitInsn(Opcodes.I2L);
     }
 
+    public final void l2i(){
+        visitor.visitInsn(Opcodes.L2I);
+    }
+
     public final void invokespecial(String owner, String name, String descriptor){
         visitor.visitMethodInsn(Opcodes.INVOKESPECIAL, owner, name, descriptor, false);
     }

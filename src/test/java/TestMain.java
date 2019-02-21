@@ -1,19 +1,17 @@
 import org.c41.expression4j.Expressions;
 import org.c41.expression4j.ParameterExpression;
-import types.Blob;
-import types.BlobSetter;
 
+interface BinaryInt {
+    public int invoke(int x, int y);
+}
 public class TestMain {
 
     public static void main(String[] args) throws Exception {
 
-        ParameterExpression x = Expressions.parameter(Blob.class);
+        ParameterExpression x = Expressions.parameter(int.class);
         ParameterExpression y = Expressions.parameter(int.class);
-        BlobSetter r = Expressions.complie(BlobSetter.class,
-                Expressions.assign(
-                        Expressions.field(x, Blob.class.getField("value")),
-                        y
-                ),
+        BinaryInt r = Expressions.complie(BinaryInt.class,
+                Expressions.add(x, y),
                 x, y);
     }
 

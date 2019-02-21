@@ -1,13 +1,9 @@
 package testcase;
 
-import org.c41.expression4j.Expression;
 import org.c41.expression4j.Expressions;
 import org.c41.expression4j.ParameterExpression;
 import org.junit.Assert;
 import org.junit.Test;
-import types.Blob;
-import types.Blob2Int;
-import types.BlobSetter;
 
 public class TestField {
 
