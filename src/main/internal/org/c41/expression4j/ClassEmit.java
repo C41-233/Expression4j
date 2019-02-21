@@ -33,7 +33,9 @@ final class ClassEmit<T> {
         );
     }
 
-    protected T emit(Expression body, Parameter[] parameters){
+    protected T emit(Expression body, ParameterExpression[] parameters){
+        parameters = parameters.clone();
+
         ConstructorEmit constructor = new ConstructorEmit(visitor);
         constructor.emit();
 

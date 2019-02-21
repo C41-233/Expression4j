@@ -1,5 +1,5 @@
 import org.c41.expression4j.Expressions;
-import org.c41.expression4j.Parameter;
+import org.c41.expression4j.ParameterExpression;
 
 public class TestMain {
 
@@ -12,7 +12,7 @@ public class TestMain {
     }
 
     public static void main(String[] args) throws Exception {
-        Parameter x = Expressions.parameter(My.class);
+        ParameterExpression x = Expressions.parameter(My.class);
         Run r = Expressions.complie(Run.class,
             Expressions.field(x, My.class.getField("value")),
         x);

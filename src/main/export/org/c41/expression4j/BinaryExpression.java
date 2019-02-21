@@ -1,8 +1,6 @@
 package org.c41.expression4j;
 
-import org.c41.expression4j.annotations.ValueExpression;
-
-public abstract class BinaryExpression extends Expression implements ValueExpression {
+public abstract class BinaryExpression extends Expression{
 
     private final Expression left;
     private final Expression right;
@@ -13,14 +11,16 @@ public abstract class BinaryExpression extends Expression implements ValueExpres
     }
 
     @Override
-    void emit(BodyEmit ctx, EmitType access) {
-        if(access != EmitType.Read){
-            throw new CompileExpression();
-        }
-        left.emit(ctx, EmitType.Read);
-        right.emit(ctx, EmitType.Read);
+    void emit(BodyEmit ctx) {
+        left.emit(ctx);
+        right.emit(ctx);
         emitOpCode(ctx);
     }
 
     abstract void emitOpCode(BodyEmit ctx);
+
+    @Override
+    public Class<?> getExpressionType() {
+        return null;
+    }
 }

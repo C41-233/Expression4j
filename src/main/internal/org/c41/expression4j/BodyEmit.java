@@ -9,10 +9,10 @@ import java.lang.reflect.Method;
 final class BodyEmit extends MethodEmit {
 
     private final Expression body;
-    private final Parameter[] parameters;
+    private final ParameterExpression[] parameters;
     private final Class<?> returnType;
 
-    protected BodyEmit(ClassVisitor writer, Method method, Expression body, Parameter[] parameters) {
+    protected BodyEmit(ClassVisitor writer, Method method, Expression body, ParameterExpression[] parameters) {
         super(writer.visitMethod(
             Opcodes.ACC_PUBLIC,
             method.getName(),
@@ -28,9 +28,32 @@ final class BodyEmit extends MethodEmit {
     @Override
     protected void emitCodes() {
         for(int i=0; i<parameters.length; i++){
-            parameters[i].slot = i + 1;
+            declareParameter(parameters[i]);
         }
-        body.emit(this, EmitType.Read);
+        body.emit(this);
         tret(returnType);
     }
+
+    public final void tload(ParameterExpression parameter){
+        tload(getParameterSlot(parameter), parameter.getExpressionType());
+    }
+
+    private final ParameterStack parameterStack = new ParameterStack();
+
+    public final void declareParameter(ParameterExpression parameter){
+        parameterStack.declareParameter(parameter);
+    }
+
+    public final void pushScope(){
+        parameterStack.pushScope();
+    }
+
+    public final void popScope(){
+        parameterStack.popScope();
+    }
+
+    public final int getParameterSlot(ParameterExpression parameter){
+        return parameterStack.getParameterSlot(parameter);
+    }
+
 }

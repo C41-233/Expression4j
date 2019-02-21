@@ -1,7 +1,7 @@
 package testcase;
 
 import org.c41.expression4j.Expressions;
-import org.c41.expression4j.Parameter;
+import org.c41.expression4j.ParameterExpression;
 import org.junit.Assert;
 import org.junit.Test;
 import types.BinaryInt;
@@ -10,8 +10,8 @@ public class TestCalculate {
 
     @Test
     public void test1(){
-        Parameter x = Expressions.parameter(int.class);
-        Parameter y = Expressions.parameter(int.class);
+        ParameterExpression x = Expressions.parameter(int.class);
+        ParameterExpression y = Expressions.parameter(int.class);
         BinaryInt r = Expressions.complie(BinaryInt.class,
             Expressions.add(x, y),
         x, y);
@@ -21,8 +21,8 @@ public class TestCalculate {
 
     @Test
     public void test2(){
-        Parameter x = Expressions.parameter(int.class);
-        Parameter y = Expressions.parameter(int.class);
+        ParameterExpression x = Expressions.parameter(int.class);
+        ParameterExpression y = Expressions.parameter(int.class);
         BinaryInt r = Expressions.complie(BinaryInt.class,
             Expressions.subtract(x, y),
         x, y);
@@ -32,8 +32,8 @@ public class TestCalculate {
 
     @Test
     public void test3(){
-        Parameter x = Expressions.parameter(int.class);
-        Parameter y = Expressions.parameter(int.class);
+        ParameterExpression x = Expressions.parameter(int.class);
+        ParameterExpression y = Expressions.parameter(int.class);
         BinaryInt r = Expressions.complie(BinaryInt.class,
                 Expressions.add(x, Expressions.subtract(x, y)),
                 x, y);

@@ -6,4 +6,7 @@ final class TypeUtils {
         return type == int.class;
     }
 
+    public static int getSlotCount(Class<?> type) {
+        return type == long.class || type == double.class ? 2 : 1;
+    }
 }

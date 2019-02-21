@@ -1,34 +1,40 @@
 package org.c41.expression4j;
 
-import org.c41.expression4j.annotations.ValueExpression;
-
 import java.lang.reflect.Field;
 
 public class Expressions {
 
-    public static <TLambda> TLambda complie(Class<TLambda> lambdaClass, BlockExpression body, Parameter... parameters){
+    public static <TLambda> TLambda complie(Class<TLambda> lambdaClass, BlockExpression body, ParameterExpression... parameters){
         ClassEmit<TLambda> cl = new ClassEmit<>(lambdaClass);
         return cl.emit(body, parameters);
     }
 
-    public static <TLambda, TExpression extends Expression & ValueExpression> TLambda complie(Class<TLambda> lambdaClass, TExpression body, Parameter... parameters){
+    public static <TLambda> TLambda complie(Class<TLambda> lambdaClass, Expression body, ParameterExpression... parameters){
         ClassEmit<TLambda> cl = new ClassEmit<>(lambdaClass);
         return cl.emit(body, parameters);
     }
 
-    public static <T1 extends Expression & ValueExpression, T2 extends Expression & ValueExpression> AddExpression add(T1 left, T2 right){
+    public static AddExpression add(Expression left, Expression right){
         return new AddExpression(left, right);
     }
 
-    public static <T1 extends Expression & ValueExpression, T2 extends Expression & ValueExpression> SubtractExpression subtract(T1 left, T2 right){
+    public static SubtractExpression subtract(Expression left, Expression right){
         return new SubtractExpression(left, right);
     }
 
-    public static Parameter parameter(Class<?> type){
-        return new Parameter(type);
+    public static ParameterExpression parameter(Class<?> type){
+        return new ParameterExpression(type);
     }
 
-    public static <T extends Expression & ValueExpression> FieldExpression field(T self, Field field){
+    public static FieldExpression field(Expression self, Field field){
         return new FieldExpression(self, field);
+    }
+
+    public static AssignExpression assign(Expression self, Expression value){
+        return new AssignExpression(self, value);
+    }
+
+    public static BlockExpression block(Expression... expressions){
+        return new BlockExpression(expressions);
     }
 }
