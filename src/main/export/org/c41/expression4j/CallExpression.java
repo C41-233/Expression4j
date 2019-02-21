@@ -7,23 +7,32 @@ import java.lang.reflect.Method;
 public abstract class CallExpression extends Expression{
 
     final Method method;
-    final Expression[] parameters;
+    final Class<?>[] parameterTypes;
+    final Expression[] parameterExpressions;
 
     CallExpression(Method method, Expression[] parameterExpressions){
         this.method = method;
-        this.parameters = parameterExpressions.clone();
+        this.parameterExpressions = parameterExpressions.clone();
+        this.parameterTypes = method.getParameterTypes();
 
-        Class<?>[] parameterTypes = method.getParameterTypes();
+        if(parameterTypes.length > parameterExpressions.length){
+            throw CompileExpression.parametersNotMatch(parameterTypes, parameterExpressions);
+        }
+        if (!isVarArgs() && parameterTypes.length != parameterExpressions.length){
+            throw CompileExpression.parametersNotMatch(parameterTypes, parameterExpressions);
+        }
+    }
+
+    private boolean isVarArgs(){
         if(method.isVarArgs()){
-            if(parameterTypes.length > parameterExpressions.length){
-                throw CompileExpression.parametersNotMatch(parameterTypes, parameterExpressions);
+            if(parameterExpressions.length > parameterTypes.length){
+                return true;
             }
+            Class<?> targetType = parameterTypes[parameterTypes.length - 1];
+            Class<?> inType = parameterExpressions[parameterTypes.length - 1].getExpressionType();
+            return targetType != inType;
         }
-        else{
-            if(parameterTypes.length != parameterExpressions.length){
-                throw CompileExpression.parametersNotMatch(parameterTypes, parameterExpressions);
-            }
-        }
+        return false;
     }
 
     @Override
@@ -36,27 +45,27 @@ public abstract class CallExpression extends Expression{
 
         int i = 0;
         while(i < parameterTypes.length - 1){
-            parameters[i].emit(ctx);
+            parameterExpressions[i].emit(ctx);
             i++;
         }
-        if(method.isVarArgs()){
+        if(isVarArgs()){
             int varArgStart = i;
 
             Class<?> arrayElementType = parameterTypes[varArgStart].getComponentType();
 
             Expressions.newArray(
-                    arrayElementType,
-                    new IntConstantExpression(parameters.length - varArgStart)
+                arrayElementType,
+                new IntConstantExpression(parameterExpressions.length - varArgStart)
             ).emit(ctx);
-            for(int index = 0; i < parameters.length; index++, i++){
+            for(int index = 0; i < parameterExpressions.length; index++, i++){
                 ctx.dup();
                 Expressions.constant(index).emit(ctx);
-                Expressions.cast(parameters[i], arrayElementType).emit(ctx);
+                Expressions.cast(parameterExpressions[i], arrayElementType).emit(ctx);
                 ctx.tastore(arrayElementType);
             }
         }
         else{
-            this.parameters[i].emit(ctx);
+            this.parameterExpressions[i].emit(ctx);
         }
     }
 

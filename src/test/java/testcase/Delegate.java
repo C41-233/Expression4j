@@ -19,3 +19,7 @@ interface FuncILI {
 interface FuncStringObjectsString{
     public String invoke(String s, Object... args);
 }
+
+interface ActionStringObjects{
+    public void invoke(String s, Object... args);
+}

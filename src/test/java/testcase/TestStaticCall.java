@@ -27,12 +27,28 @@ public class TestStaticCall {
         FuncStringObjectsString r = Expressions.complie(FuncStringObjectsString.class,
             Expressions.call(
                 String.class.getMethod("format", String.class, Object[].class),
-                Expressions.constant("%d%s"),
-                Expressions.constant(1),
-                Expressions.constant("ss")
+                x,
+                y
             ),
         x, y);
         Assert.assertEquals(String.format("%d%s",1, "ss"), r.invoke("%d%s", 1, "ss"));
+    }
+
+    @Test
+    public void format2() throws NoSuchMethodException {
+        final String msg = "%d%f%s%c";
+        ParameterExpression x = Expressions.parameter(String.class);
+        ParameterExpression y = Expressions.parameter(Object[].class);
+        FuncStringObjectsString r = Expressions.complie(FuncStringObjectsString.class,
+                Expressions.call(
+                    String.class.getMethod("format", String.class, Object[].class),
+                    x, y
+                ),
+                x, y);
+        Assert.assertEquals(
+            String.format(msg, 1, 1.2, "value", 'x'),
+            r.invoke(msg, 1, 1.2, "value", 'x')
+        );
     }
 
 }
