@@ -48,7 +48,6 @@ public class TestStaticCall {
             String.format(msg, 1, 1.2, "value", 'x'),
             r.invoke(msg, 1, 1.2, "value", 'x')
         );
-        System.out.println(r.invoke(msg, 1, 1.2, "value", 'x'));
     }
 
 }

@@ -1,5 +1,13 @@
 package testcase;
 
+interface Action{
+    public void invoke();
+}
+
+interface FuncString{
+    public String invoke();
+}
+
 interface FuncDD{
     public double invoke(double x);
 }

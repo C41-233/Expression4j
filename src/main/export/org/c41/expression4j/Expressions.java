@@ -79,4 +79,8 @@ public class Expressions {
         return new TryCatchFinallyExpression(tryExpression, catchExpressions.clone(), finallyExpression);
     }
 
+    public static ReturnExpression ret(Expression expression){
+        return new ReturnExpression(expression);
+    }
+
 }

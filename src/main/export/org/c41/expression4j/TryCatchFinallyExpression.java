@@ -27,12 +27,17 @@ public class TryCatchFinallyExpression extends Expression {
         Label finallyStart = new Label();
         Label finallyRethrowStart = new Label();
 
-        ctx.label(tryStart);
-        tryExpression.emit(ctx);
-        ctx.label(tryEnd);
-        ctx.jmp(finallyStart);
+        ctx.pushScope();
+        {
+            ctx.label(tryStart);
+            tryExpression.emit(ctx);
+            ctx.label(tryEnd);
+            ctx.jmp(finallyStart);
+        }
+        ctx.popScope();
 
         for(int i = 0; i < catchCount; i++){
+            ctx.pushScope();
             ctx.label(catchStarts[i]);
 
             ParameterExpression e = new ParameterExpression(catchExpressions[i].getTargetType());
@@ -41,14 +46,19 @@ public class TryCatchFinallyExpression extends Expression {
             catchExpressions[i].getBodyExpression().emit(ctx);
 
             ctx.jmp(finallyStart);
+            ctx.popScope();
         }
 
-        ctx.label(finallyRethrowStart);
-        finallyExpression.emit(ctx);
-        ctx.athrow();
+        ctx.pushScope();
+            ctx.label(finallyRethrowStart);
+            finallyExpression.emit(ctx);
+            ctx.athrow();
+        ctx.popScope();
 
-        ctx.label(finallyStart);
-        finallyExpression.emit(ctx);
+        ctx.pushScope();
+            ctx.label(finallyStart);
+            finallyExpression.emit(ctx);
+        ctx.popScope();
 
         for(int i=0; i < catchCount; i++){
             ctx.exception(
