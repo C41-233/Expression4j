@@ -10,7 +10,7 @@ public class TestField {
     @Test
     public void test1() throws NoSuchFieldException {
         ParameterExpression x = Expressions.parameter(Blob.class);
-        Blob2Int r = Expressions.complie(Blob2Int.class,
+        Blob2Int r = Expressions.compile(Blob2Int.class,
             Expressions.field(x, Blob.class.getField("value")),
         x);
         Assert.assertEquals(0, r.invoke(new Blob()));
@@ -25,7 +25,7 @@ public class TestField {
     public void test2() throws NoSuchFieldException {
         ParameterExpression x = Expressions.parameter(Blob.class);
         ParameterExpression y = Expressions.parameter(int.class);
-        BlobSetter r = Expressions.complie(BlobSetter.class,
+        BlobSetter r = Expressions.compile(BlobSetter.class,
             Expressions.assign(
                 Expressions.field(x, Blob.class.getField("value")),
                 y

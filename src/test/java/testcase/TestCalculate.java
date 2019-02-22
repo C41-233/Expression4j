@@ -11,7 +11,7 @@ public class TestCalculate {
     public void intAdd(){
         ParameterExpression x = Expressions.parameter(int.class);
         ParameterExpression y = Expressions.parameter(int.class);
-        FuncIII r = Expressions.complie(FuncIII.class,
+        FuncIII r = Expressions.compile(FuncIII.class,
             Expressions.add(x, y),
         x, y);
         Assert.assertEquals(300, r.invoke(100, 200));
@@ -22,7 +22,7 @@ public class TestCalculate {
     public void intSub(){
         ParameterExpression x = Expressions.parameter(int.class);
         ParameterExpression y = Expressions.parameter(int.class);
-        FuncIII r = Expressions.complie(FuncIII.class,
+        FuncIII r = Expressions.compile(FuncIII.class,
             Expressions.subtract(x, y),
         x, y);
         Assert.assertEquals(-100, r.invoke(100, 200));
@@ -33,7 +33,7 @@ public class TestCalculate {
     public void intAddSub(){
         ParameterExpression x = Expressions.parameter(int.class);
         ParameterExpression y = Expressions.parameter(int.class);
-        FuncIII r = Expressions.complie(FuncIII.class,
+        FuncIII r = Expressions.compile(FuncIII.class,
                 Expressions.add(x, Expressions.subtract(x, y)),
                 x, y);
         Assert.assertEquals(100 + 100 - 200 , r.invoke(100, 200));
@@ -44,7 +44,7 @@ public class TestCalculate {
     public void longAddSub(){
         ParameterExpression x = Expressions.parameter(long.class);
         ParameterExpression y = Expressions.parameter(long.class);
-        FuncLLL r = Expressions.complie(FuncLLL.class,
+        FuncLLL r = Expressions.compile(FuncLLL.class,
                 Expressions.add(x, Expressions.subtract(x, y)),
                 x, y);
         Assert.assertEquals(100 + 100 - 200 , r.invoke(100, 200));
@@ -55,7 +55,7 @@ public class TestCalculate {
     public void intLongAdd(){
         ParameterExpression x = Expressions.parameter(int.class);
         ParameterExpression y = Expressions.parameter(long.class);
-        FuncILI r = Expressions.complie(FuncILI.class,
+        FuncILI r = Expressions.compile(FuncILI.class,
                 Expressions.cast(Expressions.add(x, Expressions.subtract(x, y)), int.class),
         x, y);
         Assert.assertEquals(100 + 100 - 200 , r.invoke(100, 200));

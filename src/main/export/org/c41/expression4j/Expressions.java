@@ -5,9 +5,13 @@ import java.lang.reflect.Method;
 
 public class Expressions {
 
-    public static <TLambda> TLambda complie(Class<TLambda> lambdaClass, Expression body, ParameterExpression... parameters){
-        ClassEmit<TLambda> cl = new ClassEmit<>(lambdaClass);
-        return cl.emit(body, parameters);
+    public static <TLambda> TLambda compile(Class<TLambda> lambdaClass, Expression body, ParameterExpression... parameters){
+        return compile(lambdaClass, lambdaClass.getClassLoader(), body, parameters);
+    }
+
+    public static <TLambda> TLambda compile(Class<TLambda> lambdaClass, ClassLoader cl, Expression body, ParameterExpression... parameters){
+        ClassEmit<TLambda> ce = new ClassEmit<>(lambdaClass);
+        return ce.emit(cl, body, parameters);
     }
 
     public static AddExpression add(Expression left, Expression right){

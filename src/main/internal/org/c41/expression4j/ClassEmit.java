@@ -52,7 +52,7 @@ final class ClassEmit<T> {
         );
     }
 
-    protected T emit(Expression body, ParameterExpression[] parameters){
+    protected T emit(ClassLoader cl, Expression body, ParameterExpression[] parameters){
         parameters = parameters.clone();
 
         ConstructorEmit constructor = new ConstructorEmit(visitor);
@@ -83,7 +83,7 @@ final class ClassEmit<T> {
 
         byte[] bs = writer.toByteArray();
         try {
-            return emit(proxy.getClassLoader(), proxy.getTypeName() + name, bs);
+            return emit(cl, proxy.getTypeName() + name, bs);
         } catch (Throwable e) {
             throw CompileExpression.emitFail(debug.getBuffer().toString(), e);
         }
