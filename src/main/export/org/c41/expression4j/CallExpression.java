@@ -4,7 +4,7 @@ import jdk.internal.org.objectweb.asm.Type;
 
 import java.lang.reflect.Method;
 
-public abstract class CallExpression extends Expression{
+public class CallExpression extends Expression{
 
     final Method method;
     final Class<?>[] parameterTypes;
@@ -16,10 +16,10 @@ public abstract class CallExpression extends Expression{
         this.parameterTypes = method.getParameterTypes();
 
         if(parameterTypes.length > parameterExpressions.length){
-            throw CompileExpression.parametersNotMatch(parameterTypes, parameterExpressions);
+            throw CompileException.parametersNotMatch(parameterTypes, parameterExpressions);
         }
         if (!isVarArgs() && parameterTypes.length != parameterExpressions.length){
-            throw CompileExpression.parametersNotMatch(parameterTypes, parameterExpressions);
+            throw CompileException.parametersNotMatch(parameterTypes, parameterExpressions);
         }
     }
 
@@ -34,6 +34,9 @@ public abstract class CallExpression extends Expression{
         }
         return false;
     }
+
+    @Override
+    void emit(BodyEmit bodyEmit) { }
 
     @Override
     public Class<?> getExpressionType() {
@@ -65,7 +68,9 @@ public abstract class CallExpression extends Expression{
             }
         }
         else{
-            this.parameterExpressions[i].emit(ctx);
+            if(i < parameterTypes.length){
+                this.parameterExpressions[i].emit(ctx);
+            }
         }
     }
 

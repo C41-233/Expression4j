@@ -11,7 +11,7 @@ public class Expressions {
 
     public static <TLambda> TLambda compile(Class<TLambda> lambdaClass, ClassLoader cl, Expression body, ParameterExpression... parameters){
         ClassEmit<TLambda> ce = new ClassEmit<>(lambdaClass);
-        return ce.emit(cl, body, parameters);
+        return ce.emit(cl, body, parameters.clone());
     }
 
     public static AddExpression add(Expression left, Expression right){
@@ -35,7 +35,7 @@ public class Expressions {
             Field field = type.getField(name);
             return new StaticFieldExpression(field);
         } catch (NoSuchFieldException e) {
-            throw CompileExpression.fieldNotFoundException(type, name);
+            throw CompileException.fieldNotFoundException(type, name);
         }
     }
 
@@ -56,7 +56,7 @@ public class Expressions {
     }
 
     public static BlockExpression block(Expression... expressions){
-        return new BlockExpression(expressions);
+        return new BlockExpression(expressions.clone());
     }
 
     public static Expression call(Expression self, Method method, Expression... parameters) {
@@ -70,4 +70,13 @@ public class Expressions {
     public static Expression newArray(Class<?> elementType, Expression length) {
         return new NewArrayExpression(elementType, length);
     }
+
+    public static CatchExpression catchBlock(Class<?> targetType, Expression bodyExpression){
+        return new CatchExpression(targetType, bodyExpression);
+    }
+
+    public static TryCatchFinallyExpression tryCatchFinally(Expression tryExpression, Expression finallyExpression, CatchExpression... catchExpressions){
+        return new TryCatchFinallyExpression(tryExpression, catchExpressions.clone(), finallyExpression);
+    }
+
 }

@@ -1,8 +1,9 @@
 package org.c41.expression4j;
 
-import jdk.internal.org.objectweb.asm.Type;
+import org.objectweb.asm.Label;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
+import org.objectweb.asm.Type;
 
 import java.lang.reflect.Method;
 
@@ -133,7 +134,7 @@ abstract class MethodEmit {
                 dadd();
                 break;
             case Reference:
-                throw CompileExpression.badOperator();
+                throw CompileException.badOperator();
         }
     }
 
@@ -158,7 +159,7 @@ abstract class MethodEmit {
             case Double:
                 break;
             case Reference:
-                throw CompileExpression.badOperator();
+                throw CompileException.badOperator();
         }
     }
 
@@ -376,4 +377,25 @@ abstract class MethodEmit {
     public final void dup(){
         visitor.visitInsn(Opcodes.DUP);
     }
+
+    public final void label(Label label){
+        visitor.visitLabel(label);
+    }
+
+    public final void exception(Class<?> type, Label start, Label end, Label handler){
+        visitor.visitTryCatchBlock(start, end, handler, type != null ? Type.getInternalName(type) : null);
+    }
+
+    public final void athrow(){
+        visitor.visitInsn(Opcodes.ATHROW);
+    }
+
+    public final void jmp(Label label){
+        visitor.visitJumpInsn(Opcodes.GOTO, label);
+    }
+
+    public final void pop(){
+        visitor.visitInsn(Opcodes.POP);
+    }
+
 }

@@ -34,7 +34,7 @@ public class AssignExpression extends Expression {
             e.emitAssign(ctx, liftRight);
         }
         else{
-            throw CompileExpression.writeValueExpression();
+            throw CompileException.writeValueExpression();
         }
     }
 

@@ -4,8 +4,8 @@ public class BlockExpression extends Expression{
 
     private Expression[] expressions;
 
-    public BlockExpression(Expression[] expressions) {
-        this.expressions = expressions.clone();
+    BlockExpression(Expression[] expressions) {
+        this.expressions = expressions;
     }
 
     @Override

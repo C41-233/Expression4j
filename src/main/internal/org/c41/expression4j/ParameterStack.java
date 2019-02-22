@@ -61,7 +61,7 @@ final class ParameterStack {
         if(slot != null){
             return slot;
         }
-        throw CompileExpression.parameterNotDeclare(parameter);
+        throw CompileException.parameterNotDeclare(parameter);
     }
 
 }

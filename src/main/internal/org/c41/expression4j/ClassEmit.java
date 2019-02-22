@@ -43,18 +43,16 @@ final class ClassEmit<T> {
         visitor = new TraceClassVisitor(this.writer, printWriter);
 
         visitor.visit(
-                Opcodes.V1_8,
-                Opcodes.ACC_PUBLIC | Opcodes.ACC_FINAL,
-                Type.getInternalName(proxy) + name,
-                null,
-                "java/lang/Object",
-                new String[]{Type.getInternalName(proxy)}
+            Opcodes.V1_8,
+            Opcodes.ACC_PUBLIC | Opcodes.ACC_FINAL,
+            Type.getInternalName(proxy) + name,
+            null,
+            "java/lang/Object",
+            new String[]{Type.getInternalName(proxy)}
         );
     }
 
     protected T emit(ClassLoader cl, Expression body, ParameterExpression[] parameters){
-        parameters = parameters.clone();
-
         ConstructorEmit constructor = new ConstructorEmit(visitor);
         constructor.emit();
 
@@ -63,11 +61,11 @@ final class ClassEmit<T> {
 
         Class<?>[] parameterTypes = method.getParameterTypes();
         if(parameterTypes.length != parameters.length){
-            throw CompileExpression.parametersNotMatch(parameterTypes, parameters);
+            throw CompileException.parametersNotMatch(parameterTypes, parameters);
         }
         for(int i=0; i<parameters.length; i++){
             if(parameterTypes[i] != parameters[i].getExpressionType()){
-                throw CompileExpression.parametersNotMatch(parameterTypes, parameters);
+                throw CompileException.parametersNotMatch(parameterTypes, parameters);
             }
         }
 
@@ -85,7 +83,7 @@ final class ClassEmit<T> {
         try {
             return emit(cl, proxy.getTypeName() + name, bs);
         } catch (Throwable e) {
-            throw CompileExpression.emitFail(debug.getBuffer().toString(), e);
+            throw CompileException.emitFail(debug.getBuffer().toString(), e);
         }
     }
 

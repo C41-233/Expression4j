@@ -1,6 +1,6 @@
 package org.c41.expression4j;
 
-public abstract class BinaryExpression extends Expression{
+public class BinaryExpression extends Expression{
 
     private final Expression left;
     private final Expression right;
@@ -37,7 +37,7 @@ public abstract class BinaryExpression extends Expression{
         emitOpCode(ctx);
     }
 
-    abstract void emitOpCode(BodyEmit ctx);
+    void emitOpCode(BodyEmit ctx){ }
 
     @Override
     public Class<?> getExpressionType() {
