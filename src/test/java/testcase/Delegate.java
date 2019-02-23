@@ -4,8 +4,8 @@ interface Action{
     public void invoke();
 }
 
-interface FuncString{
-    public String invoke();
+interface Func<R>{
+    public R invoke();
 }
 
 interface FuncDD{
@@ -24,10 +24,10 @@ interface FuncILI {
     public int invoke(int x, long y);
 }
 
-interface FuncStringObjectsString{
-    public String invoke(String s, Object... args);
+interface FuncVar2<T1, T2, R>{
+    public R invoke(T1 s, T2... args);
 }
 
-interface ActionStringObjects{
-    public void invoke(String s, Object... args);
+interface ActionVar2<T1, T2>{
+    public void invoke(T1 s, T2... args);
 }

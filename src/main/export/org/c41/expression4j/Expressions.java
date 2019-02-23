@@ -10,8 +10,7 @@ public class Expressions {
     }
 
     public static <TLambda> TLambda compile(Class<TLambda> lambdaClass, ClassLoader cl, Expression body, ParameterExpression... parameters){
-        ClassEmit<TLambda> ce = new ClassEmit<>(lambdaClass);
-        return ce.emit(cl, body, parameters.clone());
+        return ClassEmit.emit(lambdaClass, cl, body, parameters.clone());
     }
 
     public static AddExpression add(Expression left, Expression right){

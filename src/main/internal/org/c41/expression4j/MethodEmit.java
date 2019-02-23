@@ -462,4 +462,8 @@ abstract class MethodEmit {
         visitor.visitInsn(Opcodes.POP);
     }
 
+    public final void checkcast(Class<?> type) {
+        visitor.visitTypeInsn(Opcodes.CHECKCAST, Type.getInternalName(type));
+    }
+
 }

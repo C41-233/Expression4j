@@ -11,7 +11,7 @@ final class BodyEmit extends MethodEmit {
 
     private final Expression body;
     private final ParameterExpression[] parameters;
-    private final Class<?> returnType;
+    private final Method method;
 
     protected BodyEmit(ClassVisitor writer, Method method, Expression body, ParameterExpression[] parameters) {
         super(writer.visitMethod(
@@ -23,27 +23,37 @@ final class BodyEmit extends MethodEmit {
         ));
         this.body = body;
         this.parameters = parameters;
-        this.returnType = method.getReturnType();
+        this.method = method;
     }
 
     public Class<?> getReturnType(){
-        return this.returnType;
+        return method.getReturnType();
     }
 
     @Override
     protected void emitCodes() {
+        Class<?>[] inputTypes = method.getParameterTypes();
         for(int i=0; i<parameters.length; i++){
-            declareParameter(parameters[i]);
+            ParameterExpression parameter = parameters[i];
+            Class<?> inputType = inputTypes[i];
+            Class<?> targetType = parameter.getExpressionType();
+            declareParameter(parameter);
+            if(inputType != targetType){
+                load(parameter);
+                checkcast(targetType);
+                store(parameter);
+            }
         }
+
         body.emit(this);
-        ret(returnType);
+        ret(getReturnType());
     }
 
     public final void load(ParameterExpression parameter){
         load(getParameterSlot(parameter), parameter.getExpressionType());
     }
 
-    public void store(ParameterExpression parameter) {
+    public final void store(ParameterExpression parameter) {
         store(getParameterSlot(parameter), parameter.getExpressionType());
     }
 

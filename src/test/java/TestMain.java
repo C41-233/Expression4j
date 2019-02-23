@@ -1,7 +1,13 @@
-import org.c41.expression4j.Expressions;
+interface Func<T1, T2, R>{
+    R invoke(T1 a ,T2 b);
+}
 
-interface Run {
-    public String run();
+class Test implements Func<String, String, String>{
+
+    @Override
+    public String invoke(String x, String y){
+        return null;
+    }
 }
 
 /*
@@ -11,16 +17,8 @@ Syste.out.println(t)
 public class TestMain {
 
     public static void main(String[] args) throws NoSuchMethodException {
-        run();
-    }
-
-    private static String run(){
-        try{
-            return "1";
-        }
-        finally {
-            return "2";
-        }
+        Func<String, String, String> f =  new Test();
+        f.invoke(null, null);
     }
 
 }

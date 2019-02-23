@@ -9,11 +9,12 @@ import org.objectweb.asm.util.TraceClassVisitor;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.lang.reflect.Method;
+import java.util.concurrent.atomic.AtomicLong;
 
-final class ClassEmit<T> {
+final class ClassEmit{
 
     private static final Method DefineClass;
-    private static final StringWriter debug = new StringWriter();
+    private static AtomicLong NameHash = new AtomicLong();
 
     static {
         try {
@@ -29,32 +30,13 @@ final class ClassEmit<T> {
         return (T)cc.newInstance();
     }
 
-    private final String name;
-    private final ClassWriter writer;
-    private final ClassVisitor visitor;
-    private final Class<T> proxy;
+    public static <T> T emit(Class<T> proxy, ClassLoader cl, Expression body, ParameterExpression[] parameters){
+        String name = "$" + String.valueOf(NameHash.incrementAndGet());
 
-    public ClassEmit(Class<T> proxy){
-        this.proxy = proxy;
-        name = "$" + String.valueOf(System.currentTimeMillis() + hashCode());
-
-        writer = new ClassWriter(ClassWriter.COMPUTE_FRAMES | ClassWriter.COMPUTE_MAXS);
+        ClassWriter writer = new ClassWriter(ClassWriter.COMPUTE_FRAMES | ClassWriter.COMPUTE_MAXS);
+        StringWriter debug = new StringWriter();
         PrintWriter printWriter = new PrintWriter(debug, true);
-        visitor = new TraceClassVisitor(this.writer, printWriter);
-
-        visitor.visit(
-            Opcodes.V1_8,
-            Opcodes.ACC_PUBLIC | Opcodes.ACC_FINAL,
-            Type.getInternalName(proxy) + name,
-            null,
-            "java/lang/Object",
-            new String[]{Type.getInternalName(proxy)}
-        );
-    }
-
-    protected T emit(ClassLoader cl, Expression body, ParameterExpression[] parameters){
-        ConstructorEmit constructor = new ConstructorEmit(visitor);
-        constructor.emit();
+        ClassVisitor visitor = new TraceClassVisitor(writer, printWriter);
 
         //todo
         Method method = proxy.getDeclaredMethods()[0];
@@ -64,10 +46,24 @@ final class ClassEmit<T> {
             throw CompileException.parametersNotMatch(parameterTypes, parameters);
         }
         for(int i=0; i<parameters.length; i++){
-            if(parameterTypes[i] != parameters[i].getExpressionType()){
+            Class<?> methodParameter = parameterTypes[i];
+            Class<?> inParameter = parameters[i].getExpressionType();
+            if(!methodParameter.isAssignableFrom(inParameter)){
                 throw CompileException.parametersNotMatch(parameterTypes, parameters);
             }
         }
+
+        visitor.visit(
+                Opcodes.V1_8,
+                Opcodes.ACC_PUBLIC | Opcodes.ACC_FINAL,
+                Type.getInternalName(proxy) + name,
+                null,
+                "java/lang/Object",
+                new String[]{Type.getInternalName(proxy)}
+        );
+
+        ConstructorEmit constructor = new ConstructorEmit(visitor);
+        constructor.emit();
 
         BodyEmit bodyEmit = new BodyEmit(
             visitor,

@@ -23,7 +23,7 @@ public class TestStaticCall {
     public void format() throws NoSuchMethodException {
         ParameterExpression x = Expressions.parameter(String.class);
         ParameterExpression y = Expressions.parameter(Object[].class);
-        FuncStringObjectsString r = Expressions.compile(FuncStringObjectsString.class,
+        FuncVar2<String, Object, String> r = Expressions.compile(FuncVar2.class,
             Expressions.call(
                 String.class.getMethod("format", String.class, Object[].class),
                 x,
@@ -37,7 +37,7 @@ public class TestStaticCall {
     public void format2() throws NoSuchMethodException {
         ParameterExpression x = Expressions.parameter(String.class);
         ParameterExpression y = Expressions.parameter(Object[].class);
-        FuncStringObjectsString r = Expressions.compile(FuncStringObjectsString.class,
+        FuncVar2<String, Object, String> r = Expressions.compile(FuncVar2.class,
                 Expressions.call(
                     String.class.getMethod("format", String.class, Object[].class),
                     x, y
