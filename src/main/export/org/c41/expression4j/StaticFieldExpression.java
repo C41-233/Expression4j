@@ -25,7 +25,7 @@ public class StaticFieldExpression extends FieldExpression{
     }
 
     @Override
-    void emitWrite(BodyEmit ctx, Expression expression) {
+    void emitWrite(BodyEmit ctx, Expression expression, boolean balance) {
         expression.emitRead(ctx);
         //todo
     }

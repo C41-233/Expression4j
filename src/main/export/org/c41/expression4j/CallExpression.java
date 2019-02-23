@@ -37,6 +37,12 @@ public abstract class CallExpression extends Expression{
     abstract void emitRead(BodyEmit bodyEmit);
 
     @Override
+    final void emitBalance(BodyEmit ctx) {
+        emitRead(ctx);
+        ctx.pop(getExpressionType());
+    }
+
+    @Override
     public final Class<?> getExpressionType(){
         Class<?> returnType = getReturnType();
         if(returnType == void.class){

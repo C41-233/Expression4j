@@ -6,5 +6,8 @@ public abstract class Expression {
         throw CompileException.badOperator();
     }
 
+    void emitBalance(BodyEmit ctx) { throw CompileException.badOperator(); }
+
     public abstract Class<?> getExpressionType();
+
 }

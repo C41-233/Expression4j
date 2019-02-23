@@ -9,7 +9,7 @@ public abstract class FieldExpression extends Expression{
         this.field = field;
     }
 
-    abstract void emitWrite(BodyEmit ctx, Expression right);
+    abstract void emitWrite(BodyEmit ctx, Expression right, boolean balance);
 
     @Override
     abstract void emitRead(BodyEmit bodyEmit);

@@ -45,8 +45,15 @@ final class BodyEmit extends MethodEmit {
             }
         }
 
-        body.emitRead(this);
-        ret(getReturnType());
+        Class<?> stackType = body.getExpressionType();
+        if(stackType == null){
+            body.emitBalance(this);
+            ret();
+        }
+        else{
+            body.emitRead(this);
+            ret(getReturnType());
+        }
     }
 
     public final void load(ParameterExpression parameter){

@@ -6,7 +6,7 @@ public class EmptyExpression extends Expression{
     }
 
     @Override
-    void emitRead(BodyEmit bodyEmit) {
+    void emitBalance(BodyEmit bodyEmit) {
     }
 
     @Override

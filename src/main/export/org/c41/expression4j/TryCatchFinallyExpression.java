@@ -15,7 +15,7 @@ public class TryCatchFinallyExpression extends Expression {
     }
 
     @Override
-    void emitRead(BodyEmit ctx) {
+    void emitBalance(BodyEmit ctx) {
         if(finallyExpression != null){
             emitTryCatchFinally(ctx);
         }
@@ -37,7 +37,7 @@ public class TryCatchFinallyExpression extends Expression {
         ctx.pushScope();
         {
             ctx.label(tryStart);
-            tryExpression.emitRead(ctx);
+            tryExpression.emitBalance(ctx);
             ctx.label(tryEnd);
             ctx.jmp(exit);
         }
@@ -52,7 +52,7 @@ public class TryCatchFinallyExpression extends Expression {
                 ctx.declareParameter(e);
                 ctx.store(e);
                 for(Expression expression : catchBlocks[i].getBodyExpressions()){
-                    expression.emitRead(ctx);
+                    expression.emitBalance(ctx);
                 }
 
                 if(i != catchCount - 1){
@@ -92,7 +92,7 @@ public class TryCatchFinallyExpression extends Expression {
         ctx.pushScope();
         {
             ctx.label(tryStart);
-            tryExpression.emitRead(ctx);
+            tryExpression.emitBalance(ctx);
             ctx.label(tryEnd);
             ctx.jmp(finallyStart);
         }
@@ -110,7 +110,7 @@ public class TryCatchFinallyExpression extends Expression {
                 ctx.declareParameter(e);
                 ctx.store(e);
                 for(Expression expression : catchBlocks[i].getBodyExpressions()){
-                    expression.emitRead(ctx);
+                    expression.emitBalance(ctx);
                 }
 
                 ctx.jmp(finallyStart);
@@ -123,7 +123,7 @@ public class TryCatchFinallyExpression extends Expression {
         ctx.pushScope();
         {
             ctx.label(finallyRethrowStart);
-            finallyExpression.emitRead(ctx);
+            finallyExpression.emitBalance(ctx);
             ctx.athrow();
         }
         ctx.popScope();
@@ -131,7 +131,7 @@ public class TryCatchFinallyExpression extends Expression {
         ctx.pushScope();
         {
             ctx.label(finallyStart);
-            finallyExpression.emitRead(ctx);
+            finallyExpression.emitBalance(ctx);
             if(alreadyReturn){
                 ctx.ret(ctx.getReturnType());
             }

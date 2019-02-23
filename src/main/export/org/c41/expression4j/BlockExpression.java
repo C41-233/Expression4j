@@ -9,11 +9,11 @@ public class BlockExpression extends Expression{
     }
 
     @Override
-    void emitRead(BodyEmit ctx) {
+    void emitBalance(BodyEmit ctx) {
         ctx.pushScope();
         for (int i = 0; i < expressions.length; i++) {
             Expression expression = expressions[i];
-            expression.emitRead(ctx);
+            expression.emitBalance(ctx);
         }
         ctx.popScope();
     }

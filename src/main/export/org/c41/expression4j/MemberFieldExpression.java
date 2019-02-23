@@ -25,9 +25,12 @@ public class MemberFieldExpression extends FieldExpression{
     }
 
     @Override
-    void emitWrite(BodyEmit ctx, Expression right){
+    void emitWrite(BodyEmit ctx, Expression right, boolean balance){
         self.emitRead(ctx);
         right.emitRead(ctx);
+        if (!balance) {
+            ctx.dup_x1(right.getExpressionType());
+        }
         ctx.putfield(
             Type.getInternalName(field.getDeclaringClass()),
             field.getName(),

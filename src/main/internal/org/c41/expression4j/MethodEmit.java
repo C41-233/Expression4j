@@ -442,6 +442,52 @@ abstract class MethodEmit {
         visitor.visitInsn(Opcodes.DUP);
     }
 
+    public final void dup2(){
+        visitor.visitInsn(Opcodes.DUP2);
+    }
+
+    public void dup(Class<?> type) {
+        if(type == null){
+            return;
+        }
+        switch (TypeUtils.getStackType(type)){
+            case Int:
+            case Float:
+            case Reference:
+                dup();
+                break;
+            case Long:
+            case Double:
+                dup2();
+                break;
+        }
+    }
+
+    public void dup_x1() {
+        visitor.visitInsn(Opcodes.DUP_X1);
+    }
+
+    public void dup2_x1() {
+        visitor.visitInsn(Opcodes.DUP2_X1);
+    }
+
+    public void dup_x1(Class<?> type) {
+        if(type == null){
+            return;
+        }
+        switch (TypeUtils.getStackType(type)){
+            case Int:
+            case Float:
+            case Reference:
+                dup_x1();
+                break;
+            case Long:
+            case Double:
+                dup2_x1();
+                break;
+        }
+    }
+
     public final void label(Label label){
         visitor.visitLabel(label);
     }
@@ -490,4 +536,5 @@ abstract class MethodEmit {
     public final void newobject(Class<?> type){
         visitor.visitTypeInsn(Opcodes.NEW, Type.getInternalName(type));
     }
+
 }

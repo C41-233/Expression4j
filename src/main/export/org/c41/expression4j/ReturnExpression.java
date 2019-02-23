@@ -15,7 +15,7 @@ public class ReturnExpression extends Expression{
     }
 
     @Override
-    void emitRead(BodyEmit ctx) {
+    void emitBalance(BodyEmit ctx) {
         Label label = ctx.getRedirectControlFlow();
         if(expression != null){
             expression.emitRead(ctx);
