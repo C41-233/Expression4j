@@ -1,6 +1,5 @@
 package testcase;
 
-import org.c41.expression4j.Expression;
 import org.c41.expression4j.Expressions;
 import org.junit.After;
 import org.junit.Assert;
@@ -24,7 +23,7 @@ public class TestExceptionHandler {
     }
 
     @Test
-    public void tryCatchFinallyReturn1(){
+    public void tryCatchFinallyReturnInTry1(){
         FuncString r = Expressions.compile(FuncString.class,
             Expressions.tryCatchFinally(
                 Expressions.ret(Expressions.constant("try")),
@@ -39,7 +38,7 @@ public class TestExceptionHandler {
     }
 
     @Test
-    public void tryCatchFinallyReturn2(){
+    public void tryCatchFinallyReturnInTry2(){
         FuncString r = Expressions.compile(FuncString.class,
             Expressions.tryCatchFinally(
                 Expressions.ret(Expressions.constant("try")),
@@ -50,7 +49,7 @@ public class TestExceptionHandler {
     }
 
     @Test
-    public void tryCatchFinallyReturn3(){
+    public void tryCatchFinallyReturnInTry3(){
         FuncString r = Expressions.compile(FuncString.class,
             Expressions.block(
                 Expressions.tryCatchFinally(
@@ -61,6 +60,59 @@ public class TestExceptionHandler {
             )
         );
         Assert.assertEquals("try", r.invoke());
+    }
+
+    @Test
+    public void tryCatchFinallyReturnInTry4() throws NoSuchMethodException {
+        FuncString r = Expressions.compile(FuncString.class,
+            Expressions.block(
+                Expressions.tryCatchFinally(
+                    Expressions.ret(Expressions.constant("try")),
+                    Expressions.call(TestExceptionHandler.class.getMethod("runFinally"))
+                ),
+                Expressions.ret(Expressions.constant("after"))
+            )
+        );
+        Assert.assertEquals("try", r.invoke());
+        Assert.assertEquals("finally", sb.toString());
+    }
+
+    /*  String func():
+            try{
+                runTryThrow();
+                return "try";
+            }
+            catch(IOException e){
+                runCatch();
+                return "catch";
+            }
+            finally{
+            }
+            return "after";
+     */
+    @Test
+    public void tryCatchFinallyReturnInCatch1() throws NoSuchMethodException {
+        FuncString r = Expressions.compile(FuncString.class,
+            Expressions.block(
+                Expressions.tryCatchFinally(
+                    Expressions.block(
+                        Expressions.call(TestExceptionHandler.class.getMethod("runTryThrow")),
+                        Expressions.ret(Expressions.constant("try"))
+                    ),
+                    Expressions.empty(),
+                    Expressions.catchBlock(
+                        IOException.class,
+                        Expressions.block(
+                            Expressions.call(TestExceptionHandler.class.getMethod("runCatch")),
+                            Expressions.ret(Expressions.constant("catch"))
+                        )
+                    )
+                ),
+                Expressions.ret(Expressions.constant("after"))
+            )
+        );
+        Assert.assertEquals("catch", r.invoke());
+        Assert.assertEquals("trycatch", sb.toString());
     }
 
     @Test
