@@ -64,7 +64,7 @@ public class CallExpression extends Expression{
                 ctx.dup();
                 Expressions.constant(index).emit(ctx);
                 Expressions.cast(parameterExpressions[i], arrayElementType).emit(ctx);
-                ctx.tastore(arrayElementType);
+                ctx.astore(arrayElementType);
             }
         }
         else{
@@ -89,11 +89,7 @@ final class MethodCallExpression extends CallExpression{
     void emit(BodyEmit ctx) {
         self.emit(ctx);
         pushParameters(ctx);
-        ctx.invokevirtual(
-            Type.getInternalName(method.getDeclaringClass()),
-            method.getName(),
-            Type.getMethodDescriptor(method)
-        );
+        ctx.invokevirtual(method);
     }
 }
 

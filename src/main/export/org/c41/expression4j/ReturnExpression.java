@@ -11,7 +11,7 @@ public class ReturnExpression extends Expression{
     @Override
     void emit(BodyEmit ctx) {
         expression.emit(ctx);
-        ctx.treturn(expression.getExpressionType());
+        ctx.ret(expression.getExpressionType());
     }
 
     @Override

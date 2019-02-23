@@ -21,7 +21,7 @@ public class ArrayIndexExpression extends Expression{
         array.emit(ctx);
         index.emit(ctx);
         expression.emit(ctx);
-        ctx.tastore(getExpressionType());
+        ctx.astore(getExpressionType());
     }
 
     @Override

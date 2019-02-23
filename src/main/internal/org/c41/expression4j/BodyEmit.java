@@ -31,15 +31,15 @@ final class BodyEmit extends MethodEmit {
             declareParameter(parameters[i]);
         }
         body.emit(this);
-        treturn(returnType);
+        ret(returnType);
     }
 
     public final void tload(ParameterExpression parameter){
-        tload(getParameterSlot(parameter), parameter.getExpressionType());
+        load(getParameterSlot(parameter), parameter.getExpressionType());
     }
 
     public void tstore(ParameterExpression parameter) {
-        tstore(getParameterSlot(parameter), parameter.getExpressionType());
+        store(getParameterSlot(parameter), parameter.getExpressionType());
     }
 
     private final ParameterStack parameterStack = new ParameterStack();

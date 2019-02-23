@@ -3,7 +3,19 @@ package org.c41.expression4j;
 import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.Opcodes;
 
+import java.lang.reflect.Constructor;
+
 final class ConstructorEmit extends MethodEmit{
+
+    private static final Constructor<Object> ObjectConstructor;
+
+    static{
+        try {
+            ObjectConstructor = Object.class.getConstructor();
+        } catch (NoSuchMethodException e) {
+            throw CompileException.emitFail("cannot find constructor", e);
+        }
+    }
 
     protected ConstructorEmit(ClassVisitor generator) {
         super(generator.visitMethod(
@@ -18,7 +30,7 @@ final class ConstructorEmit extends MethodEmit{
     @Override
     public void emitCodes() {
         aload(0);
-        invokespecial("java/lang/Object", "<init>", "()V");
+        invokespecial(ObjectConstructor);
         ret();
     }
 }

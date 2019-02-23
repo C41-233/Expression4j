@@ -5,6 +5,7 @@ import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.Type;
 
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 
 abstract class MethodEmit {
@@ -44,7 +45,7 @@ abstract class MethodEmit {
         visitor.visitVarInsn(Opcodes.DLOAD, n);
     }
 
-    public final void tload(int n, Class<?> type){
+    public final void load(int n, Class<?> type){
         switch (TypeUtils.getStackType(type)){
             case Int:
                 iload(n);
@@ -83,7 +84,8 @@ abstract class MethodEmit {
     public final void astore(int n){
         visitor.visitVarInsn(Opcodes.ASTORE, n);
     }
-    public final void tstore(int n, Class<?> type){
+
+    public final void store(int n, Class<?> type){
         switch (TypeUtils.getStackType(type)){
             case Int:
                 istore(n);
@@ -119,7 +121,7 @@ abstract class MethodEmit {
         visitor.visitInsn(Opcodes.DADD);
     }
 
-    public final void tadd(Class<?> type){
+    public final void add(Class<?> type){
         switch (TypeUtils.getStackType(type)){
             case Int:
                 iadd();
@@ -146,7 +148,15 @@ abstract class MethodEmit {
         visitor.visitInsn(Opcodes.LSUB);
     }
 
-    public final void tsub(Class<?> type){
+    public final void fsub(){
+        visitor.visitInsn(Opcodes.FSUB);
+    }
+
+    public final void dsub(){
+        visitor.visitInsn(Opcodes.DSUB);
+    }
+
+    public final void sub(Class<?> type){
         switch (TypeUtils.getStackType(type)){
             case Int:
                 isub();
@@ -155,8 +165,10 @@ abstract class MethodEmit {
                 lsub();
                 break;
             case Float:
+                fsub();
                 break;
             case Double:
+                dsub();
                 break;
             case Reference:
                 throw CompileException.badOperator();
@@ -187,7 +199,7 @@ abstract class MethodEmit {
         visitor.visitInsn(Opcodes.ARETURN);
     }
 
-    final void treturn(Class<?> type){
+    final void ret(Class<?> type){
         if(type == null || type == void.class){
             ret();
             return;
@@ -259,21 +271,41 @@ abstract class MethodEmit {
         visitor.visitLdcInsn(value);
     }
 
-    public final void invokespecial(String owner, String name, String descriptor){
-        visitor.visitMethodInsn(Opcodes.INVOKESPECIAL, owner, name, descriptor, false);
+    public final void invokespecial(Method method){
+        invoke(Opcodes.INVOKESPECIAL, method);
     }
 
-    public final void invokevirtual(String owner, String name, String descriptor){
-        visitor.visitMethodInsn(Opcodes.INVOKEVIRTUAL, owner, name, descriptor, false);
+    public final void invokespecial(Constructor<?> method){
+        invoke(Opcodes.INVOKESPECIAL, method);
+    }
+
+    public final void invokevirtual(Method method){
+        invoke(Opcodes.INVOKEVIRTUAL, method);
     }
 
     public final void invokestatic(Method method){
+        invoke(Opcodes.INVOKESTATIC, method);
+    }
+
+    private final void invoke(int opcode, Method method){
+        Class<?> owner = method.getDeclaringClass();
         visitor.visitMethodInsn(
-            Opcodes.INVOKESTATIC,
-            Type.getInternalName(method.getDeclaringClass()),
+            opcode,
+            Type.getInternalName(owner),
             method.getName(),
             Type.getMethodDescriptor(method),
-            false
+            owner.isInterface()
+        );
+    }
+
+    private final void invoke(int opcode, Constructor<?> method){
+        Class<?> owner = method.getDeclaringClass();
+        visitor.visitMethodInsn(
+            opcode,
+            Type.getInternalName(owner),
+            "<init>",
+            Type.getConstructorDescriptor(method),
+            owner.isInterface()
         );
     }
 
@@ -307,7 +339,7 @@ abstract class MethodEmit {
         }
     }
 
-    public final void tastore(Class<?> elementType){
+    public final void astore(Class<?> elementType){
         if(elementType == boolean.class || elementType == byte.class){
             bastore();
         }
@@ -372,6 +404,38 @@ abstract class MethodEmit {
 
     public final void iaload(){
         visitor.visitInsn(Opcodes.IALOAD);
+    }
+
+    public final void laload(){
+        visitor.visitInsn(Opcodes.LALOAD);
+    }
+
+    public final void faload(){
+        visitor.visitInsn(Opcodes.FALOAD);
+    }
+
+    public final void daload(){
+        visitor.visitInsn(Opcodes.DALOAD);
+    }
+
+    public final void aload(Class<?> type){
+        switch (TypeUtils.getStackType(type)) {
+            case Int:
+                iaload();
+                break;
+            case Long:
+                laload();
+                break;
+            case Float:
+                faload();
+                break;
+            case Double:
+                daload();
+                break;
+            case Reference:
+                aaload();
+                break;
+        }
     }
 
     public final void dup(){
