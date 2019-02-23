@@ -1,5 +1,7 @@
 package org.c41.expression4j;
 
+import org.objectweb.asm.Label;
+
 public class ReturnExpression extends Expression{
 
     private final Expression expression;
@@ -14,12 +16,27 @@ public class ReturnExpression extends Expression{
 
     @Override
     void emit(BodyEmit ctx) {
+        Label label = ctx.getRedirectControlFlow();
         if(expression != null){
             expression.emit(ctx);
-            ctx.ret(expression.getExpressionType());
+            if(label != null){
+                ctx.jmp(label);
+            }
+            else{
+                ctx.ret(expression.getExpressionType());
+            }
         }
         else{
-            ctx.ret();
+            if(label != null){
+                ctx.jmp(label);
+            }
+            else {
+                ctx.ret();
+            }
+        }
+
+        if(label != null){
+            ctx.onReturn();
         }
     }
 

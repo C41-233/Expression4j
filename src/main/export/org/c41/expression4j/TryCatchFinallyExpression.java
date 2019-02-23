@@ -29,6 +29,9 @@ public class TryCatchFinallyExpression extends Expression {
         Label finallyStart = new Label();
         Label finallyRethrowStart = new Label();
 
+        boolean alreadyReturn = false;
+
+        ctx.pushRedirectControlFlow(finallyStart);
         ctx.pushScope();
         {
             ctx.label(tryStart);
@@ -37,20 +40,25 @@ public class TryCatchFinallyExpression extends Expression {
             ctx.jmp(finallyStart);
         }
         ctx.popScope();
+        alreadyReturn = alreadyReturn || ctx.isRedirectTrigger();
+        ctx.popRedirectControlFlow();
 
         for(int i = 0; i < catchCount; i++){
             ctx.pushScope();
+            ctx.pushRedirectControlFlow(finallyStart);
             {
                 ctx.label(catchStarts[i]);
 
                 ParameterExpression e = Expressions.parameter(catchBlocks[i].getTargetType());
                 ctx.declareParameter(e);
-                ctx.tstore(e);
+                ctx.store(e);
                 catchBlocks[i].getBodyExpression().emit(ctx);
 
                 ctx.jmp(finallyStart);
             }
             ctx.popScope();
+            alreadyReturn = alreadyReturn || ctx.isRedirectTrigger();
+            ctx.popRedirectControlFlow();
         }
 
         ctx.pushScope();
@@ -65,6 +73,9 @@ public class TryCatchFinallyExpression extends Expression {
         {
             ctx.label(finallyStart);
             finallyExpression.emit(ctx);
+            if(alreadyReturn){
+                ctx.ret(ctx.getReturnType());
+            }
         }
         ctx.popScope();
 
