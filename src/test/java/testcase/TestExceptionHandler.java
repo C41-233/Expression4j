@@ -8,6 +8,8 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.io.IOException;
+
 public class TestExceptionHandler {
 
     private static StringBuilder sb;
@@ -76,7 +78,7 @@ public class TestExceptionHandler {
     }
 
     @Test
-    public void tryCatch() throws NoSuchMethodException {
+    public void tryCatch1() throws NoSuchMethodException {
         Action r = Expressions.compile(Action.class,
             Expressions.tryCatch(
                 Expressions.call(TestExceptionHandler.class.getMethod("runTry")),
@@ -87,13 +89,37 @@ public class TestExceptionHandler {
         Assert.assertEquals("try", sb.toString());
     }
 
+    @Test
+    public void tryCatch2() throws NoSuchMethodException {
+        Action r = Expressions.compile(Action.class,
+                Expressions.tryCatch(
+                        Expressions.call(TestExceptionHandler.class.getMethod("runTryThrow")),
+                        Expressions.catchBlock(RuntimeException.class, Expressions.call(TestExceptionHandler.class.getMethod("runCatch")))
+                )
+        );
+        Assert.assertThrows(IOException.class, () -> r.invoke());
+        Assert.assertEquals("try", sb.toString());
+    }
+
+    @Test
+    public void tryCatch3() throws NoSuchMethodException {
+        Action r = Expressions.compile(Action.class,
+                Expressions.tryCatch(
+                        Expressions.call(TestExceptionHandler.class.getMethod("runTryThrow")),
+                        Expressions.catchBlock(IOException.class, Expressions.call(TestExceptionHandler.class.getMethod("runCatch")))
+                )
+        );
+        r.invoke();
+        Assert.assertEquals("trycatch", sb.toString());
+    }
+
     public static void runTry() throws Exception{
         sb.append("try");
     }
 
     public static void runTryThrow() throws Exception{
         sb.append("try");
-        throw new Exception();
+        throw new IOException();
     }
 
     public static void runCatch(){
