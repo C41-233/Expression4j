@@ -71,12 +71,12 @@ public class Expressions {
         return new NewArrayExpression(elementType, length);
     }
 
-    public static CatchExpression catchBlock(Class<?> targetType, Expression bodyExpression){
-        return new CatchExpression(targetType, bodyExpression);
+    public static CatchBlock catchBlock(Class<?> targetType, Expression bodyExpression){
+        return new CatchBlock(targetType, bodyExpression);
     }
 
-    public static TryCatchFinallyExpression tryCatchFinally(Expression tryExpression, Expression finallyExpression, CatchExpression... catchExpressions){
-        return new TryCatchFinallyExpression(tryExpression, catchExpressions.clone(), finallyExpression);
+    public static TryCatchFinallyExpression tryCatchFinally(Expression tryExpression, Expression finallyExpression, CatchBlock... catchBlocks){
+        return new TryCatchFinallyExpression(tryExpression, catchBlocks.clone(), finallyExpression);
     }
 
     public static ReturnExpression ret(Expression expression){

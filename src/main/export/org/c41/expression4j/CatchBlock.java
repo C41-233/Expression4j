@@ -1,11 +1,11 @@
 package org.c41.expression4j;
 
-public class CatchExpression {
+public class CatchBlock {
 
     private Class<?> targetType;
     private Expression expression;
 
-    CatchExpression(Class<?> targetType, Expression expression){
+    CatchBlock(Class<?> targetType, Expression expression){
         this.targetType = targetType;
         this.expression = expression;
     }

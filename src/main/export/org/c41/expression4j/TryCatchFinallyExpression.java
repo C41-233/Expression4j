@@ -6,11 +6,11 @@ public class TryCatchFinallyExpression extends Expression {
 
     private final Expression tryExpression;
     private final Expression finallyExpression;
-    private final CatchExpression[] catchExpressions;
+    private final CatchBlock[] catchBlocks;
 
-    TryCatchFinallyExpression(Expression tryExpression, CatchExpression[] catchExpressions, Expression finallyExpression){
+    TryCatchFinallyExpression(Expression tryExpression, CatchBlock[] catchBlocks, Expression finallyExpression){
         this.tryExpression = tryExpression;
-        this.catchExpressions = catchExpressions;
+        this.catchBlocks = catchBlocks;
         this.finallyExpression = finallyExpression;
     }
 
@@ -19,7 +19,7 @@ public class TryCatchFinallyExpression extends Expression {
         Label tryStart = new Label();
         Label tryEnd = new Label();
 
-        int catchCount = catchExpressions.length;
+        int catchCount = catchBlocks.length;
         Label[] catchStarts = new Label[catchCount];
         for(int i = 0; i < catchCount; i++){
             catchStarts[i] = new Label();
@@ -40,10 +40,10 @@ public class TryCatchFinallyExpression extends Expression {
             ctx.pushScope();
             ctx.label(catchStarts[i]);
 
-            ParameterExpression e = new ParameterExpression(catchExpressions[i].getTargetType());
+            ParameterExpression e = new ParameterExpression(catchBlocks[i].getTargetType());
             ctx.declareParameter(e);
             ctx.tstore(e);
-            catchExpressions[i].getBodyExpression().emit(ctx);
+            catchBlocks[i].getBodyExpression().emit(ctx);
 
             ctx.jmp(finallyStart);
             ctx.popScope();
@@ -62,7 +62,7 @@ public class TryCatchFinallyExpression extends Expression {
 
         for(int i=0; i < catchCount; i++){
             ctx.exception(
-                catchExpressions[i].getTargetType(),
+                catchBlocks[i].getTargetType(),
                 tryStart,
                 tryEnd,
                 catchStarts[i]
