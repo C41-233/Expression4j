@@ -57,7 +57,7 @@ public class TestField {
                     Expressions.Field(a, "value"),
                     Expressions.Field(b, "value")
                 ),
-                Expressions.Assign(Expressions.Field(a, "value"), tmp)
+                Expressions.Assign(Expressions.Field(b, "value"), tmp)
             ),
             a, b
         );
