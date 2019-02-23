@@ -1,6 +1,6 @@
 package org.c41.expression4j;
 
-public class BinaryExpression extends Expression{
+public abstract class BinaryExpression extends Expression{
 
     private final Expression left;
     private final Expression right;
@@ -17,10 +17,10 @@ public class BinaryExpression extends Expression{
 
         if(leftType == StackType.Long && rightType == StackType.Int){
             this.liftLeft = left;
-            this.liftRight = Expressions.cast(right, long.class);
+            this.liftRight = Expressions.Cast(right, long.class);
         }
         else if(rightType == StackType.Long && leftType == StackType.Int){
-            this.liftLeft = Expressions.cast(left, long.class);
+            this.liftLeft = Expressions.Cast(left, long.class);
             this.liftRight = right;
         }
         else{
@@ -37,7 +37,7 @@ public class BinaryExpression extends Expression{
         emitOpCode(ctx);
     }
 
-    void emitOpCode(BodyEmit ctx){ }
+    abstract void emitOpCode(BodyEmit ctx);
 
     @Override
     public Class<?> getExpressionType() {

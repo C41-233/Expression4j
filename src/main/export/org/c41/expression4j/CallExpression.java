@@ -1,16 +1,14 @@
 package org.c41.expression4j;
 
-import jdk.internal.org.objectweb.asm.Type;
+import java.lang.reflect.Executable;
 
-import java.lang.reflect.Method;
+public abstract class CallExpression extends Expression{
 
-public class CallExpression extends Expression{
-
-    final Method method;
+    final Executable method;
     final Class<?>[] parameterTypes;
     final Expression[] parameterExpressions;
 
-    CallExpression(Method method, Expression[] parameterExpressions){
+    CallExpression(Executable method, Expression[] parameterExpressions){
         this.method = method;
         this.parameterExpressions = parameterExpressions.clone();
         this.parameterTypes = method.getParameterTypes();
@@ -36,12 +34,10 @@ public class CallExpression extends Expression{
     }
 
     @Override
-    void emit(BodyEmit bodyEmit) { }
+    abstract void emit(BodyEmit bodyEmit);
 
     @Override
-    public Class<?> getExpressionType() {
-        return method.getReturnType();
-    }
+    public abstract Class<?> getExpressionType();
 
     void pushParameters(BodyEmit ctx){
         Class<?>[] parameterTypes = method.getParameterTypes();
@@ -56,14 +52,14 @@ public class CallExpression extends Expression{
 
             Class<?> arrayElementType = parameterTypes[varArgStart].getComponentType();
 
-            Expressions.newArray(
+            Expressions.NewArray(
                 arrayElementType,
                 new IntConstantExpression(parameterExpressions.length - varArgStart)
             ).emit(ctx);
             for(int index = 0; i < parameterExpressions.length; index++, i++){
                 ctx.dup();
-                Expressions.constant(index).emit(ctx);
-                Expressions.cast(parameterExpressions[i], arrayElementType).emit(ctx);
+                Expressions.Constant(index).emit(ctx);
+                Expressions.Cast(parameterExpressions[i], arrayElementType).emit(ctx);
                 ctx.astore(arrayElementType);
             }
         }
@@ -74,34 +70,13 @@ public class CallExpression extends Expression{
         }
     }
 
-}
-
-final class MethodCallExpression extends CallExpression{
-
-    private final Expression self;
-
-    MethodCallExpression(Expression self, Method method, Expression[] parameters) {
-        super(method, parameters);
-        this.self = self;
-    }
-
     @Override
-    void emit(BodyEmit ctx) {
-        self.emit(ctx);
-        pushParameters(ctx);
-        ctx.invokevirtual(method);
+    Class<?> getStackType() {
+        Class<?> returnType = getExpressionType();
+        if(returnType == void.class){
+            return null;
+        }
+        return returnType;
     }
 }
 
-final class StaticCallExpression extends CallExpression{
-
-    StaticCallExpression(Method method, Expression[] parameters) {
-        super(method, parameters);
-    }
-
-    @Override
-    void emit(BodyEmit ctx) {
-        pushParameters(ctx);
-        ctx.invokestatic(method);
-    }
-}

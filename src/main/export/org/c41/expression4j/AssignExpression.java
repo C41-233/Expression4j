@@ -31,7 +31,7 @@ public class AssignExpression extends Expression {
         }
         else if(left instanceof ArrayIndexExpression){
             ArrayIndexExpression e = (ArrayIndexExpression)left;
-            e.emitAssign(ctx, liftRight);
+            e.emitWrite(ctx, liftRight);
         }
         else{
             throw CompileException.writeValueExpression();

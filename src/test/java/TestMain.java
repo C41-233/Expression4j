@@ -21,4 +21,18 @@ public class TestMain {
         f.invoke(null, null);
     }
 
+    public void run(StringBuilder sb){
+        sb.append("before");
+        try{
+            sb.append("try1");
+        }
+        catch(RuntimeException e){
+            sb.append("catch1");
+        }
+        finally{
+            sb.append("finally");
+        }
+        sb.append("after");
+    }
+
 }

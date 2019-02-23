@@ -1,12 +1,14 @@
 package testcase;
 
 import org.c41.expression4j.Expressions;
+import org.c41.expression4j.ParameterExpression;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.io.IOException;
+import java.lang.reflect.Method;
 
 public class TestExceptionHandler {
 
@@ -24,13 +26,13 @@ public class TestExceptionHandler {
 
     @Test
     public void tryCatchFinallyReturnInTry1(){
-        Func<String> r = Expressions.compile(Func.class,
-            Expressions.tryCatchFinally(
-                Expressions.ret(Expressions.constant("try")),
-                Expressions.ret(Expressions.constant("finally")),
-                Expressions.catchBlock(
+        Func<String> r = Expressions.Compile(Func.class,
+            Expressions.TryCatchFinally(
+                Expressions.Return(Expressions.Constant("try")),
+                Expressions.Return(Expressions.Constant("finally")),
+                Expressions.CatchBlock(
                     Exception.class,
-                    Expressions.ret(Expressions.constant("catch"))
+                    Expressions.Return(Expressions.Constant("catch"))
                 )
             )
         );
@@ -39,10 +41,10 @@ public class TestExceptionHandler {
 
     @Test
     public void tryCatchFinallyReturnInTry2(){
-        Func<String> r = Expressions.compile(Func.class,
-            Expressions.tryCatchFinally(
-                Expressions.ret(Expressions.constant("try")),
-                Expressions.empty()
+        Func<String> r = Expressions.Compile(Func.class,
+            Expressions.TryCatchFinally(
+                Expressions.Return(Expressions.Constant("try")),
+                Expressions.Empty()
             )
         );
         Assert.assertEquals("try", r.invoke());
@@ -50,13 +52,13 @@ public class TestExceptionHandler {
 
     @Test
     public void tryCatchFinallyReturnInTry3(){
-        Func<String> r = Expressions.compile(Func.class,
-            Expressions.block(
-                Expressions.tryCatchFinally(
-                    Expressions.ret(Expressions.constant("try")),
-                    Expressions.empty()
+        Func<String> r = Expressions.Compile(Func.class,
+            Expressions.Block(
+                Expressions.TryCatchFinally(
+                    Expressions.Return(Expressions.Constant("try")),
+                    Expressions.Empty()
                 ),
-                Expressions.ret(Expressions.constant("after"))
+                Expressions.Return(Expressions.Constant("after"))
             )
         );
         Assert.assertEquals("try", r.invoke());
@@ -64,13 +66,13 @@ public class TestExceptionHandler {
 
     @Test
     public void tryCatchFinallyReturnInTry4() throws NoSuchMethodException {
-        Func<String> r = Expressions.compile(Func.class,
-            Expressions.block(
-                Expressions.tryCatchFinally(
-                    Expressions.ret(Expressions.constant("try")),
-                    Expressions.call(TestExceptionHandler.class.getMethod("runFinally"))
+        Func<String> r = Expressions.Compile(Func.class,
+            Expressions.Block(
+                Expressions.TryCatchFinally(
+                    Expressions.Return(Expressions.Constant("try")),
+                    Expressions.Call(TestExceptionHandler.class.getMethod("runFinally"))
                 ),
-                Expressions.ret(Expressions.constant("after"))
+                Expressions.Return(Expressions.Constant("after"))
             )
         );
         Assert.assertEquals("try", r.invoke());
@@ -92,23 +94,23 @@ public class TestExceptionHandler {
      */
     @Test
     public void tryCatchFinallyReturnInCatch1() throws NoSuchMethodException {
-        Func<String> r = Expressions.compile(Func.class,
-            Expressions.block(
-                Expressions.tryCatchFinally(
-                    Expressions.block(
-                        Expressions.call(TestExceptionHandler.class.getMethod("runTryThrow")),
-                        Expressions.ret(Expressions.constant("try"))
+        Func<String> r = Expressions.Compile(Func.class,
+            Expressions.Block(
+                Expressions.TryCatchFinally(
+                    Expressions.Block(
+                        Expressions.Call(TestExceptionHandler.class.getMethod("runTryThrow")),
+                        Expressions.Return(Expressions.Constant("try"))
                     ),
-                    Expressions.empty(),
-                    Expressions.catchBlock(
+                    Expressions.Empty(),
+                    Expressions.CatchBlock(
                         IOException.class,
-                        Expressions.block(
-                            Expressions.call(TestExceptionHandler.class.getMethod("runCatch")),
-                            Expressions.ret(Expressions.constant("catch"))
+                        Expressions.Block(
+                            Expressions.Call(TestExceptionHandler.class.getMethod("runCatch")),
+                            Expressions.Return(Expressions.Constant("catch"))
                         )
                     )
                 ),
-                Expressions.ret(Expressions.constant("after"))
+                Expressions.Return(Expressions.Constant("after"))
             )
         );
         Assert.assertEquals("catch", r.invoke());
@@ -133,26 +135,26 @@ public class TestExceptionHandler {
      */
     @Test
     public void tryCatchFinallyReturnInCatch2() throws NoSuchMethodException {
-        Func<String> r = Expressions.compile(Func.class,
-            Expressions.block(
-                Expressions.tryCatchFinally(
-                    Expressions.block(
-                        Expressions.call(TestExceptionHandler.class.getMethod("runTryThrow")),
-                        Expressions.ret(Expressions.constant("try"))
+        Func<String> r = Expressions.Compile(Func.class,
+            Expressions.Block(
+                Expressions.TryCatchFinally(
+                    Expressions.Block(
+                        Expressions.Call(TestExceptionHandler.class.getMethod("runTryThrow")),
+                        Expressions.Return(Expressions.Constant("try"))
                     ),
-                    Expressions.block(
-                        Expressions.call(TestExceptionHandler.class.getMethod("runFinally")),
-                        Expressions.ret(Expressions.constant("finally"))
+                    Expressions.Block(
+                        Expressions.Call(TestExceptionHandler.class.getMethod("runFinally")),
+                        Expressions.Return(Expressions.Constant("finally"))
                     ),
-                    Expressions.catchBlock(
+                    Expressions.CatchBlock(
                         IOException.class,
-                        Expressions.block(
-                            Expressions.call(TestExceptionHandler.class.getMethod("runCatch")),
-                            Expressions.ret(Expressions.constant("catch"))
+                        Expressions.Block(
+                            Expressions.Call(TestExceptionHandler.class.getMethod("runCatch")),
+                            Expressions.Return(Expressions.Constant("catch"))
                         )
                     )
                 ),
-                Expressions.ret(Expressions.constant("after"))
+                Expressions.Return(Expressions.Constant("after"))
             )
         );
         Assert.assertEquals("finally", r.invoke());
@@ -161,18 +163,11 @@ public class TestExceptionHandler {
 
     /*
         void func(StringBuilder sb):
+            sb.append("before");
             try{
-                sb.append(try1);
-                try{
-                    sb.append(try2);
-                    throw new IOException();
-                }
-                catch(IOException e){
-                    sb.append("catch2");
-                    throw e;
-                }
+                sb.append("try1");
             }
-            catch(IOException e){
+            catch(RuntimeException e){
                 sb.append("catch1");
             }
             finally{
@@ -182,15 +177,36 @@ public class TestExceptionHandler {
      */
     @Test
     public void tryCatchFinallyReturnInCatch3() throws NoSuchMethodException {
+        Method method = StringBuilder.class.getMethod("append", String.class);
+        ParameterExpression p = Expressions.Parameter(StringBuilder.class);
+        Action1<StringBuilder> r = Expressions.Compile(Action1.class,
+            Expressions.Block(
+                Expressions.Call(p, method, Expressions.Constant("before")),
+                Expressions.TryCatchFinally(
+                    Expressions.Block(
+                        Expressions.Call(p, method, Expressions.Constant("try1"))
+                    ),
+                    Expressions.Block(
+                        Expressions.Call(p, method, Expressions.Constant("finally"))
+                    ),
+                    Expressions.CatchBlock(
+                        RuntimeException.class,
+                        Expressions.Call(p, method, Expressions.Constant("catch1"))
+                    )
+                ),
+                Expressions.Call(p, method, Expressions.Constant("after"))
+            ),
+            p
+        );
     }
 
     @Test
     public void tryCatchFinally1() throws NoSuchMethodException {
-        Action r = Expressions.compile(Action.class,
-            Expressions.tryCatchFinally(
-                Expressions.call(TestExceptionHandler.class.getMethod("runTry")),
-                Expressions.call(TestExceptionHandler.class.getMethod("runFinally")),
-                Expressions.catchBlock(Exception.class, Expressions.call(TestExceptionHandler.class.getMethod("runCatch")))
+        Action r = Expressions.Compile(Action.class,
+            Expressions.TryCatchFinally(
+                Expressions.Call(TestExceptionHandler.class.getMethod("runTry")),
+                Expressions.Call(TestExceptionHandler.class.getMethod("runFinally")),
+                Expressions.CatchBlock(Exception.class, Expressions.Call(TestExceptionHandler.class.getMethod("runCatch")))
             )
         );
         r.invoke();
@@ -199,11 +215,11 @@ public class TestExceptionHandler {
 
     @Test
     public void tryCatchFinally2() throws NoSuchMethodException {
-        Action r = Expressions.compile(Action.class,
-            Expressions.tryCatchFinally(
-                Expressions.call(TestExceptionHandler.class.getMethod("runTryThrow")),
-                Expressions.call(TestExceptionHandler.class.getMethod("runFinally")),
-                Expressions.catchBlock(Exception.class, Expressions.call(TestExceptionHandler.class.getMethod("runCatch")))
+        Action r = Expressions.Compile(Action.class,
+            Expressions.TryCatchFinally(
+                Expressions.Call(TestExceptionHandler.class.getMethod("runTryThrow")),
+                Expressions.Call(TestExceptionHandler.class.getMethod("runFinally")),
+                Expressions.CatchBlock(Exception.class, Expressions.Call(TestExceptionHandler.class.getMethod("runCatch")))
             )
         );
         r.invoke();
@@ -212,10 +228,10 @@ public class TestExceptionHandler {
 
     @Test
     public void tryFinally() throws NoSuchMethodException {
-        Action r = Expressions.compile(Action.class,
-            Expressions.tryCatchFinally(
-                Expressions.call(TestExceptionHandler.class.getMethod("runTry")),
-                Expressions.call(TestExceptionHandler.class.getMethod("runFinally"))
+        Action r = Expressions.Compile(Action.class,
+            Expressions.TryCatchFinally(
+                Expressions.Call(TestExceptionHandler.class.getMethod("runTry")),
+                Expressions.Call(TestExceptionHandler.class.getMethod("runFinally"))
             )
         );
         r.invoke();
@@ -224,10 +240,10 @@ public class TestExceptionHandler {
 
     @Test
     public void tryCatch1() throws NoSuchMethodException {
-        Action r = Expressions.compile(Action.class,
-            Expressions.tryCatch(
-                Expressions.call(TestExceptionHandler.class.getMethod("runTry")),
-                Expressions.catchBlock(Exception.class, Expressions.call(TestExceptionHandler.class.getMethod("runCatch")))
+        Action r = Expressions.Compile(Action.class,
+            Expressions.TryCatch(
+                Expressions.Call(TestExceptionHandler.class.getMethod("runTry")),
+                Expressions.CatchBlock(Exception.class, Expressions.Call(TestExceptionHandler.class.getMethod("runCatch")))
             )
         );
         r.invoke();
@@ -236,10 +252,10 @@ public class TestExceptionHandler {
 
     @Test
     public void tryCatch2() throws NoSuchMethodException {
-        Action r = Expressions.compile(Action.class,
-                Expressions.tryCatch(
-                        Expressions.call(TestExceptionHandler.class.getMethod("runTryThrow")),
-                        Expressions.catchBlock(RuntimeException.class, Expressions.call(TestExceptionHandler.class.getMethod("runCatch")))
+        Action r = Expressions.Compile(Action.class,
+                Expressions.TryCatch(
+                        Expressions.Call(TestExceptionHandler.class.getMethod("runTryThrow")),
+                        Expressions.CatchBlock(RuntimeException.class, Expressions.Call(TestExceptionHandler.class.getMethod("runCatch")))
                 )
         );
         Assert.assertThrows(IOException.class, () -> r.invoke());
@@ -248,10 +264,10 @@ public class TestExceptionHandler {
 
     @Test
     public void tryCatch3() throws NoSuchMethodException {
-        Action r = Expressions.compile(Action.class,
-            Expressions.tryCatch(
-                Expressions.call(TestExceptionHandler.class.getMethod("runTryThrow")),
-                Expressions.catchBlock(IOException.class, Expressions.call(TestExceptionHandler.class.getMethod("runCatch")))
+        Action r = Expressions.Compile(Action.class,
+            Expressions.TryCatch(
+                Expressions.Call(TestExceptionHandler.class.getMethod("runTryThrow")),
+                Expressions.CatchBlock(IOException.class, Expressions.Call(TestExceptionHandler.class.getMethod("runCatch")))
             )
         );
         r.invoke();

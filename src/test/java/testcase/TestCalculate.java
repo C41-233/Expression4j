@@ -9,10 +9,10 @@ public class TestCalculate {
 
     @Test
     public void intAdd(){
-        ParameterExpression x = Expressions.parameter(int.class);
-        ParameterExpression y = Expressions.parameter(int.class);
-        FuncIII r = Expressions.compile(FuncIII.class,
-            Expressions.add(x, y),
+        ParameterExpression x = Expressions.Parameter(int.class);
+        ParameterExpression y = Expressions.Parameter(int.class);
+        FuncIII r = Expressions.Compile(FuncIII.class,
+            Expressions.Add(x, y),
         x, y);
         Assert.assertEquals(300, r.invoke(100, 200));
         Assert.assertEquals(2, r.invoke(0, 2));
@@ -20,10 +20,10 @@ public class TestCalculate {
 
     @Test
     public void intSub(){
-        ParameterExpression x = Expressions.parameter(int.class);
-        ParameterExpression y = Expressions.parameter(int.class);
-        FuncIII r = Expressions.compile(FuncIII.class,
-            Expressions.subtract(x, y),
+        ParameterExpression x = Expressions.Parameter(int.class);
+        ParameterExpression y = Expressions.Parameter(int.class);
+        FuncIII r = Expressions.Compile(FuncIII.class,
+            Expressions.Subtract(x, y),
         x, y);
         Assert.assertEquals(-100, r.invoke(100, 200));
         Assert.assertEquals(100, r.invoke(200, 100));
@@ -31,10 +31,10 @@ public class TestCalculate {
 
     @Test
     public void intAddSub(){
-        ParameterExpression x = Expressions.parameter(int.class);
-        ParameterExpression y = Expressions.parameter(int.class);
-        FuncIII r = Expressions.compile(FuncIII.class,
-                Expressions.add(x, Expressions.subtract(x, y)),
+        ParameterExpression x = Expressions.Parameter(int.class);
+        ParameterExpression y = Expressions.Parameter(int.class);
+        FuncIII r = Expressions.Compile(FuncIII.class,
+                Expressions.Add(x, Expressions.Subtract(x, y)),
                 x, y);
         Assert.assertEquals(100 + 100 - 200 , r.invoke(100, 200));
         Assert.assertEquals(200 + 200 - 100, r.invoke(200, 100));
@@ -42,10 +42,10 @@ public class TestCalculate {
 
     @Test
     public void longAddSub(){
-        ParameterExpression x = Expressions.parameter(long.class);
-        ParameterExpression y = Expressions.parameter(long.class);
-        FuncLLL r = Expressions.compile(FuncLLL.class,
-                Expressions.add(x, Expressions.subtract(x, y)),
+        ParameterExpression x = Expressions.Parameter(long.class);
+        ParameterExpression y = Expressions.Parameter(long.class);
+        FuncLLL r = Expressions.Compile(FuncLLL.class,
+                Expressions.Add(x, Expressions.Subtract(x, y)),
                 x, y);
         Assert.assertEquals(100 + 100 - 200 , r.invoke(100, 200));
         Assert.assertEquals(200 + 200 - 100, r.invoke(200, 100));
@@ -53,10 +53,10 @@ public class TestCalculate {
 
     @Test
     public void intLongAdd(){
-        ParameterExpression x = Expressions.parameter(int.class);
-        ParameterExpression y = Expressions.parameter(long.class);
-        FuncILI r = Expressions.compile(FuncILI.class,
-                Expressions.cast(Expressions.add(x, Expressions.subtract(x, y)), int.class),
+        ParameterExpression x = Expressions.Parameter(int.class);
+        ParameterExpression y = Expressions.Parameter(long.class);
+        FuncILI r = Expressions.Compile(FuncILI.class,
+                Expressions.Cast(Expressions.Add(x, Expressions.Subtract(x, y)), int.class),
         x, y);
         Assert.assertEquals(100 + 100 - 200 , r.invoke(100, 200));
         Assert.assertEquals(200 + 200 - 100, r.invoke(200, 100));

@@ -1,21 +1,24 @@
 package org.c41.expression4j;
 
+import java.util.Arrays;
+import java.util.List;
+
 public class CatchBlock {
 
-    private Class<?> targetType;
-    private Expression expression;
+    private final Class<?> targetType;
+    private final List<Expression> expressions;
 
-    CatchBlock(Class<?> targetType, Expression expression){
+    CatchBlock(Class<?> targetType, Expression[] expressions){
         this.targetType = targetType;
-        this.expression = expression;
+        this.expressions = Arrays.asList(expressions);
     }
 
     public Class<?> getTargetType(){
         return targetType;
     }
 
-    public Expression getBodyExpression(){
-        return expression;
+    public Iterable<Expression> getBodyExpressions(){
+        return expressions;
     }
 
 }

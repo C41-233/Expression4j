@@ -14,10 +14,10 @@ public class ArrayIndexExpression extends Expression{
     void emit(BodyEmit ctx) {
         array.emit(ctx);
         index.emit(ctx);
-
+        //todo
     }
 
-    public void emitAssign(BodyEmit ctx, Expression expression) {
+    public void emitWrite(BodyEmit ctx, Expression expression) {
         array.emit(ctx);
         index.emit(ctx);
         expression.emit(ctx);

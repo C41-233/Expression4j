@@ -462,8 +462,32 @@ abstract class MethodEmit {
         visitor.visitInsn(Opcodes.POP);
     }
 
+    public final void pop2(){
+        visitor.visitInsn(Opcodes.POP2);
+    }
+
+    public final void pop(Class<?> type){
+        if(type == null){
+            return;
+        }
+        switch (TypeUtils.getStackType(type)){
+            case Int:
+            case Float:
+            case Reference:
+                pop();
+                break;
+            case Long:
+            case Double:
+                pop2();
+                break;
+        }
+    }
+
     public final void checkcast(Class<?> type) {
         visitor.visitTypeInsn(Opcodes.CHECKCAST, Type.getInternalName(type));
     }
 
+    public final void newobject(Class<?> type){
+        visitor.visitTypeInsn(Opcodes.NEW, Type.getInternalName(type));
+    }
 }

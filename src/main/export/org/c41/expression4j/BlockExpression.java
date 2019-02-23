@@ -11,7 +11,8 @@ public class BlockExpression extends Expression{
     @Override
     void emit(BodyEmit ctx) {
         ctx.pushScope();
-        for(Expression expression : expressions){
+        for (int i = 0; i < expressions.length; i++) {
+            Expression expression = expressions[i];
             expression.emit(ctx);
         }
         ctx.popScope();
@@ -20,5 +21,13 @@ public class BlockExpression extends Expression{
     @Override
     public Class<?> getExpressionType() {
         return null;
+    }
+
+    @Override
+    Class<?> getStackType() {
+        if(expressions.length == 0){
+            return null;
+        }
+        return expressions[expressions.length - 1].getStackType();
     }
 }

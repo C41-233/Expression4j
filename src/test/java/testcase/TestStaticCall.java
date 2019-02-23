@@ -5,13 +5,15 @@ import org.c41.expression4j.ParameterExpression;
 import org.junit.Assert;
 import org.junit.Test;
 
+import java.lang.reflect.Method;
+
 public class TestStaticCall {
 
     @Test
     public void sin() throws NoSuchMethodException {
-        ParameterExpression x = Expressions.parameter(double.class);
-        FuncDD r = Expressions.compile(FuncDD.class,
-                Expressions.call(
+        ParameterExpression x = Expressions.Parameter(double.class);
+        FuncDD r = Expressions.Compile(FuncDD.class,
+                Expressions.Call(
                         Math.class.getMethod("sin", double.class),
                         x
                 ),
@@ -20,11 +22,11 @@ public class TestStaticCall {
     }
 
     @Test
-    public void format() throws NoSuchMethodException {
-        ParameterExpression x = Expressions.parameter(String.class);
-        ParameterExpression y = Expressions.parameter(Object[].class);
-        FuncVar2<String, Object, String> r = Expressions.compile(FuncVar2.class,
-            Expressions.call(
+    public void format1() throws NoSuchMethodException {
+        ParameterExpression x = Expressions.Parameter(String.class);
+        ParameterExpression y = Expressions.Parameter(Object[].class);
+        FuncVar2<String, Object, String> r = Expressions.Compile(FuncVar2.class,
+            Expressions.Call(
                 String.class.getMethod("format", String.class, Object[].class),
                 x,
                 y
@@ -35,10 +37,10 @@ public class TestStaticCall {
 
     @Test
     public void format2() throws NoSuchMethodException {
-        ParameterExpression x = Expressions.parameter(String.class);
-        ParameterExpression y = Expressions.parameter(Object[].class);
-        FuncVar2<String, Object, String> r = Expressions.compile(FuncVar2.class,
-                Expressions.call(
+        ParameterExpression x = Expressions.Parameter(String.class);
+        ParameterExpression y = Expressions.Parameter(Object[].class);
+        FuncVar2<String, Object, String> r = Expressions.Compile(FuncVar2.class,
+                Expressions.Call(
                     String.class.getMethod("format", String.class, Object[].class),
                     x, y
                 ),
@@ -48,6 +50,29 @@ public class TestStaticCall {
             String.format(msg, 1, 1.2, "value", 'x'),
             r.invoke(msg, 1, 1.2, "value", 'x')
         );
+    }
+
+    /*
+        func(StringBuilder sb)
+            sb.append("x")
+            sb.append("y")
+            sb.append("z")
+     */
+    @Test
+    public void append() throws NoSuchMethodException {
+        ParameterExpression sb = Expressions.Parameter(StringBuilder.class);
+        Method method = StringBuilder.class.getMethod("append", String.class);
+        Action1<StringBuilder> r = Expressions.Compile(Action1.class,
+            Expressions.Block(
+                Expressions.Call(sb, method, Expressions.Constant("x")),
+                Expressions.Call(sb, method, Expressions.Constant("y")),
+                Expressions.Call(sb, method, Expressions.Constant("z"))
+            ),
+            sb
+        );
+        StringBuilder sb0 = new StringBuilder();
+        r.invoke(sb0);
+        Assert.assertEquals("xyz", sb0.toString());
     }
 
 }

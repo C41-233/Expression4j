@@ -9,9 +9,9 @@ public class TestParameterReturn {
 
     @Test
     public void test1(){
-        ParameterExpression x = Expressions.parameter(int.class);
-        ParameterExpression y = Expressions.parameter(int.class);
-        FuncIII r = Expressions.compile(FuncIII.class,
+        ParameterExpression x = Expressions.Parameter(int.class);
+        ParameterExpression y = Expressions.Parameter(int.class);
+        FuncIII r = Expressions.Compile(FuncIII.class,
             x,
         x, y);
         Assert.assertEquals(100, r.invoke(100, 200));
@@ -20,9 +20,9 @@ public class TestParameterReturn {
 
     @Test
     public void test2(){
-        ParameterExpression x = Expressions.parameter(int.class);
-        ParameterExpression y = Expressions.parameter(int.class);
-        FuncIII r = Expressions.compile(FuncIII.class,
+        ParameterExpression x = Expressions.Parameter(int.class);
+        ParameterExpression y = Expressions.Parameter(int.class);
+        FuncIII r = Expressions.Compile(FuncIII.class,
                 y,
         x, y);
         Assert.assertEquals(200, r.invoke(100, 200));

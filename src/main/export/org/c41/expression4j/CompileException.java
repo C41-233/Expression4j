@@ -13,11 +13,11 @@ public class CompileException extends RuntimeException{
     }
 
     public static CompileException parameterNotDeclare(ParameterExpression parameter) {
-        return new CompileException("parameter not declare");
+        return new CompileException("Parameter not declare");
     }
 
     public static CompileException writeValueExpression() {
-        return new CompileException("value expression cannot assign");
+        return new CompileException("value expression cannot Assign");
     }
 
     public static CompileException badOperator() {
@@ -25,7 +25,7 @@ public class CompileException extends RuntimeException{
     }
 
     public static CompileException emitFail(String msg, Throwable e) {
-        return new CompileException("compile fail\n" + msg, e);
+        return new CompileException("Compile fail\n" + msg, e);
     }
 
     public static CompileException parametersNotMatch(Class<?>[] parameterTypes, Expression[] parameters) {
@@ -36,14 +36,18 @@ public class CompileException extends RuntimeException{
         for(Expression parameter : parameters){
             joiner2.add(parameter.getExpressionType().getTypeName());
         }
-        return new CompileException("parameter types not match expected " + joiner1 + " actual " + joiner2);
+        return new CompileException("Parameter types not match expected " + joiner1 + " actual " + joiner2);
     }
 
     public static CompileException fieldNotFoundException(Class<System> type, String name) {
-        return new CompileException("field " + name + " not found in class " + type);
+        return new CompileException("Field " + name + " not found in class " + type);
     }
 
     public static CompileException badCast(Class<?> from, Class<?> type) {
         return new CompileException(from + " cannot cast to " + type);
+    }
+
+    public static CompileException notSupport() {
+        return new CompileException("not support");
     }
 }

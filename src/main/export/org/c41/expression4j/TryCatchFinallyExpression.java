@@ -16,8 +16,65 @@ public class TryCatchFinallyExpression extends Expression {
 
     @Override
     void emit(BodyEmit ctx) {
-        Expression finallyExpression = this.finallyExpression == null ? Expressions.empty() : this.finallyExpression;
+        if(finallyExpression != null){
+            emitTryCatchFinally(ctx);
+        }
+        else{
+            emitTryCatch(ctx);
+        }
+    }
 
+    private void emitTryCatch(BodyEmit ctx){
+        Label tryStart = new Label();
+        Label tryEnd = new Label();
+        Label exit = new Label();
+
+        int catchCount = catchBlocks.length;
+        Label[] catchStarts = new Label[catchCount];
+        for(int i = 0; i < catchCount; i++){
+            catchStarts[i] = new Label();
+        }
+        ctx.pushScope();
+        {
+            ctx.label(tryStart);
+            tryExpression.emit(ctx);
+            ctx.label(tryEnd);
+            ctx.jmp(exit);
+        }
+        ctx.popScope();
+
+        for(int i = 0; i < catchCount; i++){
+            ctx.pushScope();
+            {
+                ctx.label(catchStarts[i]);
+
+                ParameterExpression e = Expressions.Parameter(catchBlocks[i].getTargetType());
+                ctx.declareParameter(e);
+                ctx.store(e);
+                for(Expression expression : catchBlocks[i].getBodyExpressions()){
+                    expression.emit(ctx);
+                }
+
+                if(i != catchCount - 1){
+                    ctx.jmp(exit);
+                }
+            }
+            ctx.popScope();
+        }
+
+        ctx.label(exit);
+
+        for(int i=0; i < catchCount; i++){
+            ctx.exception(
+                catchBlocks[i].getTargetType(),
+                tryStart,
+                tryEnd,
+                catchStarts[i]
+            );
+        }
+    }
+
+    private void emitTryCatchFinally(BodyEmit ctx){
         Label tryStart = new Label();
         Label tryEnd = new Label();
 
@@ -49,10 +106,12 @@ public class TryCatchFinallyExpression extends Expression {
             {
                 ctx.label(catchStarts[i]);
 
-                ParameterExpression e = Expressions.parameter(catchBlocks[i].getTargetType());
+                ParameterExpression e = Expressions.Parameter(catchBlocks[i].getTargetType());
                 ctx.declareParameter(e);
                 ctx.store(e);
-                catchBlocks[i].getBodyExpression().emit(ctx);
+                for(Expression expression : catchBlocks[i].getBodyExpressions()){
+                    expression.emit(ctx);
+                }
 
                 ctx.jmp(finallyStart);
             }
