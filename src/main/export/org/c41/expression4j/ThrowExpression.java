@@ -9,8 +9,8 @@ public class ThrowExpression extends Expression{
     }
 
     @Override
-    void emit(BodyEmit ctx) {
-        expression.emit(ctx);
+    void emitRead(BodyEmit ctx) {
+        expression.emitRead(ctx);
         ctx.athrow();
     }
 

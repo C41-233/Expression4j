@@ -9,7 +9,7 @@ public class IntConstantExpression extends Expression{
     }
 
     @Override
-    void emit(BodyEmit ctx) {
+    void emitRead(BodyEmit ctx) {
         switch (value){
             case 0 : ctx.iconst_0(); break;
             case 1 : ctx.iconst_1(); break;

@@ -9,11 +9,11 @@ public class BlockExpression extends Expression{
     }
 
     @Override
-    void emit(BodyEmit ctx) {
+    void emitRead(BodyEmit ctx) {
         ctx.pushScope();
         for (int i = 0; i < expressions.length; i++) {
             Expression expression = expressions[i];
-            expression.emit(ctx);
+            expression.emitRead(ctx);
         }
         ctx.popScope();
     }
@@ -23,11 +23,4 @@ public class BlockExpression extends Expression{
         return null;
     }
 
-    @Override
-    Class<?> getStackType() {
-        if(expressions.length == 0){
-            return null;
-        }
-        return expressions[expressions.length - 1].getStackType();
-    }
 }

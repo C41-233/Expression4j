@@ -31,9 +31,9 @@ public abstract class BinaryExpression extends Expression{
     }
 
     @Override
-    void emit(BodyEmit ctx) {
-        liftLeft.emit(ctx);
-        liftRight.emit(ctx);
+    void emitRead(BodyEmit ctx) {
+        liftLeft.emitRead(ctx);
+        liftRight.emitRead(ctx);
         emitOpCode(ctx);
     }
 

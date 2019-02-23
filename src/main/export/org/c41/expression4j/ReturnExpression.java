@@ -15,10 +15,10 @@ public class ReturnExpression extends Expression{
     }
 
     @Override
-    void emit(BodyEmit ctx) {
+    void emitRead(BodyEmit ctx) {
         Label label = ctx.getRedirectControlFlow();
         if(expression != null){
-            expression.emit(ctx);
+            expression.emitRead(ctx);
             if(label != null){
                 ctx.jmp(label);
             }

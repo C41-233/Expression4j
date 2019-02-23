@@ -9,7 +9,7 @@ public class StringConstantExpression extends Expression{
     }
 
     @Override
-    void emit(BodyEmit ctx) {
+    void emitRead(BodyEmit ctx) {
         ctx.ldc(value);
     }
 

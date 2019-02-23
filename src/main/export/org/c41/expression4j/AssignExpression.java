@@ -19,15 +19,15 @@ public class AssignExpression extends Expression {
     }
 
     @Override
-    void emit(BodyEmit ctx) {
+    void emitRead(BodyEmit ctx) {
         if(left instanceof FieldExpression){
             FieldExpression e = (FieldExpression)left;
-            e.emitAssign(ctx, liftRight);
+            e.emitWrite(ctx, liftRight);
         }
         else if(left instanceof ParameterExpression){
             ParameterExpression e = (ParameterExpression)left;
             ctx.declareParameter(e);
-            e.emitAssign(ctx, liftRight);
+            e.emitWrite(ctx, liftRight);
         }
         else if(left instanceof ArrayIndexExpression){
             ArrayIndexExpression e = (ArrayIndexExpression)left;

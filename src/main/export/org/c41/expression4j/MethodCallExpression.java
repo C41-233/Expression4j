@@ -12,14 +12,14 @@ public class MethodCallExpression extends CallExpression{
     }
 
     @Override
-    void emit(BodyEmit ctx) {
-        self.emit(ctx);
+    void emitRead(BodyEmit ctx) {
+        self.emitRead(ctx);
         pushParameters(ctx);
         ctx.invokevirtual((Method) method);
     }
 
     @Override
-    public Class<?> getExpressionType() {
+    public Class<?> getReturnType() {
         return ((Method)method).getReturnType();
     }
 

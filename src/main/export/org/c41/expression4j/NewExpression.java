@@ -9,12 +9,12 @@ public class NewExpression extends CallExpression{
     }
 
     @Override
-    public Class<?> getExpressionType() {
+    public Class<?> getReturnType() {
         return ((Constructor)method).getDeclaringClass();
     }
 
     @Override
-    void emit(BodyEmit ctx) {
+    void emitRead(BodyEmit ctx) {
         Constructor<?> constructor = (Constructor) method;
         ctx.newobject(constructor.getDeclaringClass());
         ctx.dup();

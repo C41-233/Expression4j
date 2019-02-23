@@ -34,17 +34,25 @@ public abstract class CallExpression extends Expression{
     }
 
     @Override
-    abstract void emit(BodyEmit bodyEmit);
+    abstract void emitRead(BodyEmit bodyEmit);
 
     @Override
-    public abstract Class<?> getExpressionType();
+    public final Class<?> getExpressionType(){
+        Class<?> returnType = getReturnType();
+        if(returnType == void.class){
+            return null;
+        }
+        return returnType;
+    }
+
+    public abstract Class<?> getReturnType();
 
     void pushParameters(BodyEmit ctx){
         Class<?>[] parameterTypes = method.getParameterTypes();
 
         int i = 0;
         while(i < parameterTypes.length - 1){
-            parameterExpressions[i].emit(ctx);
+            parameterExpressions[i].emitRead(ctx);
             i++;
         }
         if(isVarArgs()){
@@ -55,28 +63,20 @@ public abstract class CallExpression extends Expression{
             Expressions.NewArray(
                 arrayElementType,
                 new IntConstantExpression(parameterExpressions.length - varArgStart)
-            ).emit(ctx);
+            ).emitRead(ctx);
             for(int index = 0; i < parameterExpressions.length; index++, i++){
                 ctx.dup();
-                Expressions.Constant(index).emit(ctx);
-                Expressions.Cast(parameterExpressions[i], arrayElementType).emit(ctx);
+                Expressions.Constant(index).emitRead(ctx);
+                Expressions.Cast(parameterExpressions[i], arrayElementType).emitRead(ctx);
                 ctx.astore(arrayElementType);
             }
         }
         else{
             if(i < parameterTypes.length){
-                this.parameterExpressions[i].emit(ctx);
+                this.parameterExpressions[i].emitRead(ctx);
             }
         }
     }
 
-    @Override
-    Class<?> getStackType() {
-        Class<?> returnType = getExpressionType();
-        if(returnType == void.class){
-            return null;
-        }
-        return returnType;
-    }
 }
 

@@ -13,8 +13,8 @@ public class CastExpression extends Expression{
     }
 
     @Override
-    void emit(BodyEmit ctx) {
-        expression.emit(ctx);
+    void emitRead(BodyEmit ctx) {
+        expression.emitRead(ctx);
         StackType rightStackType = TypeUtils.getStackType(expression.getExpressionType());
         StackType leftStackType = TypeUtils.getStackType(leftType);
 

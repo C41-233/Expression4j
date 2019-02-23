@@ -9,13 +9,13 @@ public class StaticCallExpression extends CallExpression{
     }
 
     @Override
-    void emit(BodyEmit ctx) {
+    void emitRead(BodyEmit ctx) {
         pushParameters(ctx);
         ctx.invokestatic((Method) method);
     }
 
     @Override
-    public Class<?> getExpressionType() {
+    public Class<?> getReturnType() {
         return ((Method)method).getReturnType();
     }
 

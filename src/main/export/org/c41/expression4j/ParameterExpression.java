@@ -9,12 +9,12 @@ public class ParameterExpression extends Expression{
     }
 
     @Override
-    void emit(BodyEmit ctx) {
+    void emitRead(BodyEmit ctx) {
         ctx.load(this);
     }
 
-    void emitAssign(BodyEmit ctx, Expression expression) {
-        expression.emit(ctx);
+    void emitWrite(BodyEmit ctx, Expression expression) {
+        expression.emitRead(ctx);
         ctx.store(this);
     }
 

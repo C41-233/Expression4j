@@ -75,8 +75,6 @@ final class ClassEmit{
 
         visitor.visitEnd();
 
-        System.out.println(debug.getBuffer().toString());
-
         byte[] bs = writer.toByteArray();
         try {
             return emit(cl, proxy.getTypeName() + name, bs);

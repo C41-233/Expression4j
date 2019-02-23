@@ -11,8 +11,8 @@ public class NewArrayExpression extends Expression{
     }
 
     @Override
-    void emit(BodyEmit ctx) {
-        length.emit(ctx);
+    void emitRead(BodyEmit ctx) {
+        length.emitRead(ctx);
         ctx.newarray(elementType);
     }
 

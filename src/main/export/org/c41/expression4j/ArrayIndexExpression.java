@@ -11,16 +11,16 @@ public class ArrayIndexExpression extends Expression{
     }
 
     @Override
-    void emit(BodyEmit ctx) {
-        array.emit(ctx);
-        index.emit(ctx);
+    void emitRead(BodyEmit ctx) {
+        array.emitRead(ctx);
+        index.emitRead(ctx);
         //todo
     }
 
     public void emitWrite(BodyEmit ctx, Expression expression) {
-        array.emit(ctx);
-        index.emit(ctx);
-        expression.emit(ctx);
+        array.emitRead(ctx);
+        index.emitRead(ctx);
+        expression.emitRead(ctx);
         ctx.astore(getExpressionType());
     }
 

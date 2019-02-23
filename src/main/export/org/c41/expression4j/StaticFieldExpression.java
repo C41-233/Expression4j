@@ -11,7 +11,7 @@ public class StaticFieldExpression extends FieldExpression{
     }
 
     @Override
-    void emit(BodyEmit ctx) {
+    void emitRead(BodyEmit ctx) {
         ctx.getstatic(
             Type.getInternalName(field.getDeclaringClass()),
             field.getName(),
@@ -25,8 +25,8 @@ public class StaticFieldExpression extends FieldExpression{
     }
 
     @Override
-    void emitAssign(BodyEmit ctx, Expression expression) {
-        expression.emit(ctx);
+    void emitWrite(BodyEmit ctx, Expression expression) {
+        expression.emitRead(ctx);
         //todo
     }
 }

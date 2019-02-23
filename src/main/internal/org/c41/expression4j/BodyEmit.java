@@ -45,7 +45,7 @@ final class BodyEmit extends MethodEmit {
             }
         }
 
-        body.emit(this);
+        body.emitRead(this);
         ret(getReturnType());
     }
 

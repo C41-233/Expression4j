@@ -14,8 +14,8 @@ public class MemberFieldExpression extends FieldExpression{
     }
 
     @Override
-    void emit(BodyEmit ctx) {
-        self.emit(ctx);
+    void emitRead(BodyEmit ctx) {
+        self.emitRead(ctx);
 
         ctx.getfield(
             Type.getInternalName(field.getDeclaringClass()),
@@ -25,9 +25,9 @@ public class MemberFieldExpression extends FieldExpression{
     }
 
     @Override
-    void emitAssign(BodyEmit ctx, Expression right){
-        self.emit(ctx);
-        right.emit(ctx);
+    void emitWrite(BodyEmit ctx, Expression right){
+        self.emitRead(ctx);
+        right.emitRead(ctx);
         ctx.putfield(
             Type.getInternalName(field.getDeclaringClass()),
             field.getName(),
