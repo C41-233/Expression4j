@@ -16,6 +16,8 @@ public class TryCatchFinallyExpression extends Expression {
 
     @Override
     void emit(BodyEmit ctx) {
+        Expression finallyExpression = this.finallyExpression == null ? Expressions.empty() : this.finallyExpression;
+
         Label tryStart = new Label();
         Label tryEnd = new Label();
 
@@ -38,26 +40,32 @@ public class TryCatchFinallyExpression extends Expression {
 
         for(int i = 0; i < catchCount; i++){
             ctx.pushScope();
-            ctx.label(catchStarts[i]);
+            {
+                ctx.label(catchStarts[i]);
 
-            ParameterExpression e = new ParameterExpression(catchBlocks[i].getTargetType());
-            ctx.declareParameter(e);
-            ctx.tstore(e);
-            catchBlocks[i].getBodyExpression().emit(ctx);
+                ParameterExpression e = Expressions.parameter(catchBlocks[i].getTargetType());
+                ctx.declareParameter(e);
+                ctx.tstore(e);
+                catchBlocks[i].getBodyExpression().emit(ctx);
 
-            ctx.jmp(finallyStart);
+                ctx.jmp(finallyStart);
+            }
             ctx.popScope();
         }
 
         ctx.pushScope();
+        {
             ctx.label(finallyRethrowStart);
             finallyExpression.emit(ctx);
             ctx.athrow();
+        }
         ctx.popScope();
 
         ctx.pushScope();
+        {
             ctx.label(finallyStart);
             finallyExpression.emit(ctx);
+        }
         ctx.popScope();
 
         for(int i=0; i < catchCount; i++){

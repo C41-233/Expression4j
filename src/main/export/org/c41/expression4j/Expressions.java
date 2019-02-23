@@ -59,6 +59,10 @@ public class Expressions {
         return new BlockExpression(expressions.clone());
     }
 
+    public static EmptyExpression empty(){
+        return new EmptyExpression();
+    }
+
     public static Expression call(Expression self, Method method, Expression... parameters) {
         return new MethodCallExpression(self, method, parameters);
     }
@@ -76,11 +80,23 @@ public class Expressions {
     }
 
     public static TryCatchFinallyExpression tryCatchFinally(Expression tryExpression, Expression finallyExpression, CatchBlock... catchBlocks){
+        return tryCatchFinally(tryExpression, catchBlocks, finallyExpression);
+    }
+
+    public static TryCatchFinallyExpression tryCatchFinally(Expression tryExpression, CatchBlock[] catchBlocks, Expression finallyExpression){
         return new TryCatchFinallyExpression(tryExpression, catchBlocks.clone(), finallyExpression);
+    }
+
+    public static TryCatchFinallyExpression tryCatch(Expression tryExpression, CatchBlock... catchBlocks){
+        return new TryCatchFinallyExpression(tryExpression, catchBlocks.clone(), null);
     }
 
     public static ReturnExpression ret(Expression expression){
         return new ReturnExpression(expression);
+    }
+
+    public static ReturnExpression ret(){
+        return new ReturnExpression();
     }
 
 }

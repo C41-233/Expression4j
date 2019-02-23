@@ -23,14 +23,14 @@ public class TestExceptionHandler {
     }
 
     @Test
-    public void test1() throws NoSuchFieldException {
+    public void tryCatchFinally1() throws NoSuchFieldException {
         FuncString r = Expressions.compile(FuncString.class,
             Expressions.tryCatchFinally(
                     Expressions.ret(Expressions.constant("try")),
                     Expressions.ret(Expressions.constant("finally")),
                     Expressions.catchBlock(
-                            Exception.class,
-                            Expressions.ret(Expressions.constant("catch"))
+                        Exception.class,
+                        Expressions.ret(Expressions.constant("catch"))
                     )
             )
         );
@@ -38,7 +38,7 @@ public class TestExceptionHandler {
     }
 
     @Test
-    public void test2() throws NoSuchMethodException {
+    public void tryCatchFinally2() throws NoSuchMethodException {
         Action r = Expressions.compile(Action.class,
             Expressions.tryCatchFinally(
                 Expressions.call(TestExceptionHandler.class.getMethod("runTry")),
@@ -50,8 +50,50 @@ public class TestExceptionHandler {
         Assert.assertEquals("tryfinally", sb.toString());
     }
 
+    @Test
+    public void tryCatchFinally3() throws NoSuchMethodException {
+        Action r = Expressions.compile(Action.class,
+            Expressions.tryCatchFinally(
+                Expressions.call(TestExceptionHandler.class.getMethod("runTryThrow")),
+                Expressions.call(TestExceptionHandler.class.getMethod("runFinally")),
+                Expressions.catchBlock(Exception.class, Expressions.call(TestExceptionHandler.class.getMethod("runCatch")))
+            )
+        );
+        r.invoke();
+        Assert.assertEquals("trycatchfinally", sb.toString());
+    }
+
+    @Test
+    public void tryFinally() throws NoSuchMethodException {
+        Action r = Expressions.compile(Action.class,
+            Expressions.tryCatchFinally(
+                Expressions.call(TestExceptionHandler.class.getMethod("runTry")),
+                Expressions.call(TestExceptionHandler.class.getMethod("runFinally"))
+            )
+        );
+        r.invoke();
+        Assert.assertEquals("tryfinally", sb.toString());
+    }
+
+    @Test
+    public void tryCatch() throws NoSuchMethodException {
+        Action r = Expressions.compile(Action.class,
+            Expressions.tryCatch(
+                Expressions.call(TestExceptionHandler.class.getMethod("runTry")),
+                Expressions.catchBlock(Exception.class, Expressions.call(TestExceptionHandler.class.getMethod("runCatch")))
+            )
+        );
+        r.invoke();
+        Assert.assertEquals("try", sb.toString());
+    }
+
     public static void runTry() throws Exception{
         sb.append("try");
+    }
+
+    public static void runTryThrow() throws Exception{
+        sb.append("try");
+        throw new Exception();
     }
 
     public static void runCatch(){
