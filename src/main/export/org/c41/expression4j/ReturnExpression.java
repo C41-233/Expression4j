@@ -16,7 +16,7 @@ public class ReturnExpression extends Expression{
 
     @Override
     void emitBalance(BodyEmit ctx) {
-        Label label = ctx.getRedirectControlFlow();
+        Label label = ctx.RedirectReturnControlFlow.getCurrentRedirectTarget();
         if(expression != null){
             expression.emitRead(ctx);
             if(label != null){
@@ -36,7 +36,7 @@ public class ReturnExpression extends Expression{
         }
 
         if(label != null){
-            ctx.onReturn();
+            ctx.RedirectReturnControlFlow.trigger();
         }
     }
 

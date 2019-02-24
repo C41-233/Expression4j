@@ -1,7 +1,6 @@
 package org.c41.expression4j;
 
 import org.objectweb.asm.ClassVisitor;
-import org.objectweb.asm.Label;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.Type;
 
@@ -82,26 +81,6 @@ final class BodyEmit extends MethodEmit {
         return parameterStack.getParameterSlot(parameter);
     }
 
-    private final RedirectControlFlow redirectControlFlow = new RedirectControlFlow();
-
-    public final void pushRedirectControlFlow(Label label){
-        redirectControlFlow.pushRedirectControlFlow(label);
-    }
-
-    public final void popRedirectControlFlow(){
-        redirectControlFlow.popRedirectControlFlow();
-    }
-
-    public final Label getRedirectControlFlow(){
-        return redirectControlFlow.getRedirectControlFlow();
-    }
-
-    public final void onReturn(){
-        redirectControlFlow.onReturn();
-    }
-
-    public final boolean isRedirectTrigger(){
-        return redirectControlFlow.isTrigger();
-    }
+    public final RedirectReturnControlFlow RedirectReturnControlFlow = new RedirectReturnControlFlow();
 
 }

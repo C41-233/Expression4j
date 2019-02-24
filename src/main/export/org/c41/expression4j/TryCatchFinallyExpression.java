@@ -74,7 +74,12 @@ public class TryCatchFinallyExpression extends Expression {
         }
     }
 
+    /**
+     * try-catch-finally block
+     * need handle finally
+     */
     private void emitTryCatchFinally(BodyEmit ctx){
+        //label
         Label tryStart = new Label();
         Label tryEnd = new Label();
 
@@ -86,9 +91,8 @@ public class TryCatchFinallyExpression extends Expression {
         Label finallyStart = new Label();
         Label finallyRethrowStart = new Label();
 
-        boolean alreadyReturn = false;
-
-        ctx.pushRedirectControlFlow(finallyStart);
+        //try
+        ctx.RedirectReturnControlFlow.pushRedirect(finallyStart);
         ctx.pushScope();
         {
             ctx.label(tryStart);
@@ -97,12 +101,10 @@ public class TryCatchFinallyExpression extends Expression {
             ctx.jmp(finallyStart);
         }
         ctx.popScope();
-        alreadyReturn = alreadyReturn || ctx.isRedirectTrigger();
-        ctx.popRedirectControlFlow();
 
+        //catch
         for(int i = 0; i < catchCount; i++){
             ctx.pushScope();
-            ctx.pushRedirectControlFlow(finallyStart);
             {
                 ctx.label(catchStarts[i]);
 
@@ -116,10 +118,11 @@ public class TryCatchFinallyExpression extends Expression {
                 ctx.jmp(finallyStart);
             }
             ctx.popScope();
-            alreadyReturn = alreadyReturn || ctx.isRedirectTrigger();
-            ctx.popRedirectControlFlow();
         }
+        boolean alreadyReturn = ctx.RedirectReturnControlFlow.isTriggered();
+        ctx.RedirectReturnControlFlow.popRedirect();
 
+        //finally rethrow
         ctx.pushScope();
         {
             ctx.label(finallyRethrowStart);
@@ -128,6 +131,7 @@ public class TryCatchFinallyExpression extends Expression {
         }
         ctx.popScope();
 
+        //finally
         ctx.pushScope();
         {
             ctx.label(finallyStart);

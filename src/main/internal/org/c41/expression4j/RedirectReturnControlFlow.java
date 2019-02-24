@@ -4,7 +4,7 @@ import org.objectweb.asm.Label;
 
 import java.util.ArrayList;
 
-final class RedirectControlFlow {
+final class RedirectReturnControlFlow {
 
     private static class RedirectFrame{
         public final Label label;
@@ -17,26 +17,26 @@ final class RedirectControlFlow {
 
     private ArrayList<RedirectFrame> redirectControlFlows = new ArrayList<>();
 
-    public final void pushRedirectControlFlow(Label label){
+    public final void pushRedirect(Label label){
         redirectControlFlows.add(new RedirectFrame(label));
     }
 
-    public final void popRedirectControlFlow(){
+    public final void popRedirect(){
         redirectControlFlows.remove(redirectControlFlows.size() - 1);
     }
 
-    public final Label getRedirectControlFlow(){
+    public final Label getCurrentRedirectTarget(){
         if(redirectControlFlows.size() == 0){
             return null;
         }
         return redirectControlFlows.get(redirectControlFlows.size() - 1).label;
     }
 
-    public final void onReturn(){
+    public final void trigger(){
         redirectControlFlows.get(redirectControlFlows.size() - 1).trigger = true;
     }
 
-    public final boolean isTrigger(){
+    public final boolean isTriggered(){
         return redirectControlFlows.get(redirectControlFlows.size() - 1).trigger;
     }
 
