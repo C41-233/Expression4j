@@ -243,6 +243,10 @@ abstract class MethodEmit {
         visitor.visitInsn(Opcodes.L2I);
     }
 
+    public final void iconst_m1() {
+        visitor.visitInsn(Opcodes.ICONST_M1);
+    }
+
     public final void iconst_0(){
         visitor.visitInsn(Opcodes.ICONST_0);
     }
@@ -265,6 +269,14 @@ abstract class MethodEmit {
 
     public final void iconst_5(){
         visitor.visitInsn(Opcodes.ICONST_5);
+    }
+
+    public final void bipush(int value){
+        visitor.visitIntInsn(Opcodes.BIPUSH, value);
+    }
+
+    public final void sipush(int value){
+        visitor.visitIntInsn(Opcodes.SIPUSH, value);
     }
 
     public final void ldc(Object value){
