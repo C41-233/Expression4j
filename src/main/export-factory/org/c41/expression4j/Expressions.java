@@ -53,7 +53,7 @@ public class Expressions {
         return new StringConstantExpression(value);
     }
 
-    public static IntConstantExpression Constant(int value){
+    public static IntegerConstantExpression Constant(int value){
         return new IntConstantExpression(value);
     }
 

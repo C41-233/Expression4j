@@ -68,7 +68,7 @@ public abstract class CallExpression extends Expression{
 
             Expressions.NewArray(
                 arrayElementType,
-                new IntConstantExpression(parameterExpressions.length - varArgStart)
+                Expressions.Constant(parameterExpressions.length - varArgStart)
             ).emitRead(ctx);
             for(int index = 0; i < parameterExpressions.length; index++, i++){
                 ctx.dup();
