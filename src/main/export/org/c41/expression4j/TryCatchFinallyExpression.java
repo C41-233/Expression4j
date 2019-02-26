@@ -83,7 +83,7 @@ public class TryCatchFinallyExpression extends Expression {
         Label tryStart = new Label();
         Label tryEnd = new Label();
 
-        int catchCount = catchBlocks.length;
+        int catchCount = catchBlocks != null ? catchBlocks.length : 0;
         Label[] catchStarts = new Label[catchCount];
         for(int i = 0; i < catchCount; i++){
             catchStarts[i] = new Label();

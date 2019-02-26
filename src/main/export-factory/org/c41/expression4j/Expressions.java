@@ -123,6 +123,10 @@ public class Expressions {
         return new TryCatchFinallyExpression(tryExpression, catchBlocks.clone(), null);
     }
 
+    public static TryCatchFinallyExpression TryFinally(Expression tryExpression, Expression finallyExpression){
+        return new TryCatchFinallyExpression(tryExpression, null, finallyExpression);
+    }
+
     public static ReturnExpression Return(Expression expression){
         return new ReturnExpression(expression);
     }
