@@ -9,7 +9,7 @@ public class ThrowExpression extends Expression{
     }
 
     @Override
-    void emitRead(BodyEmit ctx) {
+    void emitBalance(BodyEmit ctx) {
         expression.emitRead(ctx);
         ctx.athrow();
     }

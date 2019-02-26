@@ -255,6 +255,62 @@ public class TestExceptionHandler {
         Assert.assertEquals("beforetry1try2finally2finally1after", sb.toString());
     }
 
+    /*
+        void func(StringBuilder sb):
+            sb.append("before");
+            try{
+                sb.append("try1");
+                try{
+                    sb.append("try2");
+                    throw new RuntimeException();
+                }
+                finally{
+                    sb.append(finally2);
+                }
+            }
+            catch(RuntimeException e){
+                sb.append("catch1");
+            }
+            finally{
+                sb.append("finally1");
+            }
+            sb.append("after");
+     */
+    @Test
+    public void tryCatchFinallyReturnInCatch5() throws NoSuchMethodException {
+        Method method = StringBuilder.class.getMethod("append", String.class);
+        ParameterExpression p = Expressions.Parameter(StringBuilder.class);
+        Action1<StringBuilder> r = Expressions.Compile(Action1.class,
+            Expressions.Block(
+                Expressions.Call(p, method, Expressions.Constant("before")),
+                Expressions.TryCatchFinally(
+                    Expressions.Block(
+                        Expressions.Call(p, method, Expressions.Constant("try1")),
+                        Expressions.TryFinally(
+                            Expressions.Block(
+                                Expressions.Call(p, method, Expressions.Constant("try2")),
+                                Expressions.Throw(Expressions.New(RuntimeException.class.getConstructor()))
+                            ),
+                            Expressions.Call(p, method, Expressions.Constant("finally2"))
+                        )
+                    ),
+                    Expressions.Block(
+                        Expressions.Call(p, method, Expressions.Constant("finally1"))
+                    ),
+                    Expressions.CatchBlock(
+                         RuntimeException.class,
+                        Expressions.Call(p, method, Expressions.Constant("catch1"))
+                    )
+                ),
+                Expressions.Call(p, method, Expressions.Constant("after"))
+            ),
+            p
+        );
+        StringBuilder sb = new StringBuilder();
+        r.invoke(sb);
+        Assert.assertEquals("beforetry1try2finally2catch1finally1after", sb.toString());
+    }
+
     @Test
     public void tryCatchFinally1() throws NoSuchMethodException {
         Action r = Expressions.Compile(Action.class,
