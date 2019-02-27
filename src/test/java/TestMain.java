@@ -17,22 +17,12 @@ Syste.out.println(t)
 public class TestMain {
 
     public static void main(String[] args) throws NoSuchMethodException {
-        Func<String, String, String> f =  new Test();
-        f.invoke(null, null);
+        boolean x = run(1) > run(2);
+        System.out.print(x);
     }
 
-    public void run(StringBuilder sb){
-        sb.append("before");
-        try{
-            sb.append("try1");
-        }
-        catch(RuntimeException e){
-            sb.append("catch1");
-        }
-        finally{
-            sb.append("finally");
-        }
-        sb.append("after");
+    public static long run(int x){
+        return x;
     }
 
 }

@@ -516,6 +516,14 @@ abstract class MethodEmit {
         visitor.visitJumpInsn(Opcodes.GOTO, label);
     }
 
+    public final void if_icmpgt(Label label){
+        visitor.visitJumpInsn(Opcodes.IF_ICMPGT, label);
+    }
+
+    public final void if_icmple(Label label){
+        visitor.visitJumpInsn(Opcodes.IF_ICMPLE, label);
+    }
+
     public final void pop(){
         visitor.visitInsn(Opcodes.POP);
     }
