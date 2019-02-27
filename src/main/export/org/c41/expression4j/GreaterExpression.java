@@ -11,6 +11,15 @@ public class GreaterExpression extends Expression {
     }
 
     @Override
+    void emitJmpIf(BodyEmit ctx, Label label) {
+        if(lift.LiftType == int.class){
+            ctx.if_icmpgt(label);
+            return;
+        }
+        throw CompileException.badOperator();
+    }
+
+    @Override
     void emitJmpIfNot(BodyEmit ctx, Label label) {
         if(lift.LiftType == int.class){
             lift.LiftLeft.emitRead(ctx);
