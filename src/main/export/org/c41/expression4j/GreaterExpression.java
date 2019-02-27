@@ -12,7 +12,13 @@ public class GreaterExpression extends Expression {
 
     @Override
     void emitJmpIfNot(BodyEmit ctx, Label label) {
-        ctx.if_icmple(label);
+        if(lift.LiftType == int.class){
+            lift.LiftLeft.emitRead(ctx);
+            lift.LiftRight.emitRead(ctx);
+            ctx.if_icmple(label);
+            return;
+        }
+        throw CompileException.badOperator();
     }
 
     @Override

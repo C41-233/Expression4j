@@ -22,6 +22,10 @@ public class Expressions {
         return new SubtractExpression(left, right);
     }
 
+    public static GreaterExpression Greater(Expression left, Expression right){
+        return new GreaterExpression(left, right);
+    }
+
     public static ParameterExpression Parameter(Class<?> type){
         return new ParameterExpression(type);
     }
@@ -139,4 +143,7 @@ public class Expressions {
         return new ThrowExpression(expression);
     }
 
+    public static ForExpression For(Expression expression1, Expression expression2, Expression expression3, Expression... bodyExpression){
+        return new ForExpression(expression1, expression2, expression3, bodyExpression.clone());
+    }
 }

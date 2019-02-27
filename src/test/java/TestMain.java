@@ -1,13 +1,10 @@
-interface Func<T1, T2, R>{
-    R invoke(T1 a ,T2 b);
-}
+import org.c41.expression4j.Expressions;
+import org.c41.expression4j.ParameterExpression;
 
-class Test implements Func<String, String, String>{
+import java.io.PrintStream;
 
-    @Override
-    public String invoke(String x, String y){
-        return null;
-    }
+interface Run{
+    void invoke();
 }
 
 /*
@@ -17,12 +14,20 @@ Syste.out.println(t)
 public class TestMain {
 
     public static void main(String[] args) throws NoSuchMethodException {
-        boolean x = run(1) > run(2);
-        System.out.print(x);
-    }
-
-    public static long run(int x){
-        return x;
+        ParameterExpression x = Expressions.Parameter(int.class);
+        Run r = Expressions.Compile(Run.class,
+            Expressions.For(
+                Expressions.Assign(x, Expressions.Constant(10)),
+                Expressions.Greater(x, Expressions.Constant(0)),
+                Expressions.Assign(x, Expressions.Subtract(x, Expressions.Constant(1))),
+                Expressions.Call(
+                    Expressions.Field(System.class, "out"),
+                    PrintStream.class.getMethod("println", int.class),
+                    x
+                )
+            )
+        );
+        r.invoke();
     }
 
 }

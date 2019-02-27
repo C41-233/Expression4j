@@ -8,6 +8,10 @@ interface FuncDD{
     public double invoke(double x);
 }
 
+interface FuncI{
+    public int invoke();
+}
+
 interface FuncIII {
     public int invoke(int x, int y);
 }
