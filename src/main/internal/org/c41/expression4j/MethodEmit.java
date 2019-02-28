@@ -500,6 +500,31 @@ abstract class MethodEmit {
         }
     }
 
+    public final void dup_x2(){
+        visitor.visitInsn(Opcodes.DUP_X2);
+    }
+
+    public final void dup2_x2(){
+        visitor.visitInsn(Opcodes.DUP2_X2);
+    }
+
+    public final void dup_x2(Class<?> type){
+        if(type == null){
+            return;
+        }
+        switch (TypeUtils.getStackType(type)){
+            case Int:
+            case Float:
+            case Reference:
+                dup_x2();
+                break;
+            case Long:
+            case Double:
+                dup2_x2();
+                break;
+        }
+    }
+
     public final void label(Label label){
         visitor.visitLabel(label);
     }

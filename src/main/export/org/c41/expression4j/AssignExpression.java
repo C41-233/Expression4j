@@ -20,31 +20,12 @@ public class AssignExpression extends Expression {
 
     @Override
     void emitRead(BodyEmit ctx) {
-        emit(ctx, false);
+        left.emitWrite(ctx, liftRight, false);
     }
 
     @Override
     void emitBalance(BodyEmit ctx) {
-        emit(ctx, true);
-    }
-
-    private void emit(BodyEmit ctx, boolean balance){
-        if(left instanceof FieldExpression){
-            FieldExpression e = (FieldExpression)left;
-            e.emitWrite(ctx, liftRight, balance);
-        }
-        else if(left instanceof ParameterExpression){
-            ParameterExpression e = (ParameterExpression)left;
-            ctx.declareParameter(e);
-            e.emitWrite(ctx, liftRight);
-        }
-        else if(left instanceof ArrayIndexExpression){
-            ArrayIndexExpression e = (ArrayIndexExpression)left;
-            e.emitWrite(ctx, liftRight);
-        }
-        else{
-            throw CompileException.writeValueExpression();
-        }
+        left.emitWrite(ctx, liftRight, true);
     }
 
     @Override

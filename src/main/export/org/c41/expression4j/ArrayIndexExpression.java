@@ -17,10 +17,14 @@ public class ArrayIndexExpression extends Expression{
         //todo
     }
 
-    public void emitWrite(BodyEmit ctx, Expression expression) {
+    @Override
+    public void emitWrite(BodyEmit ctx, Expression expression, boolean isBalance) {
         array.emitRead(ctx);
         index.emitRead(ctx);
         expression.emitRead(ctx);
+        if(!isBalance){
+            ctx.dup_x2(expression.getExpressionType());
+        }
         ctx.astore(getExpressionType());
     }
 

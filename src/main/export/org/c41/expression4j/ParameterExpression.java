@@ -13,8 +13,13 @@ public class ParameterExpression extends Expression{
         ctx.load(this);
     }
 
-    void emitWrite(BodyEmit ctx, Expression expression) {
+    @Override
+    void emitWrite(BodyEmit ctx, Expression expression, boolean isBalance) {
+        ctx.declareParameter(this);
         expression.emitRead(ctx);
+        if(!isBalance){
+            ctx.dup(expression.getExpressionType());
+        }
         ctx.store(this);
     }
 
