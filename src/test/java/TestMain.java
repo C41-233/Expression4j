@@ -1,3 +1,5 @@
+import java.io.IOException;
+
 interface Run{
     void invoke();
 }
@@ -9,13 +11,14 @@ Syste.out.println(t)
 public class TestMain {
 
     public static void main(String[] args) throws NoSuchMethodException {
-        for(int i=0; i<10; i++){
-            try{
-                break;
-            }
-            finally {
-                System.out.println("yyy");
-            }
+        try{
+            throw new IOException();
+        }
+        catch (IOException e){
+            throw new RuntimeException();
+        }
+        finally {
+            System.out.println("123");
         }
     }
 

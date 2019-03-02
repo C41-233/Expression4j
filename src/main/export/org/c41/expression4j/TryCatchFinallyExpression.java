@@ -95,11 +95,14 @@ final class RuntimeTryFinallyExpression extends TryCatchFinallyExpression{
 
         ctx.RedirectReturnControlFlow.pushRedirect();
 
-        ctx.ParameterStack.pushScope();
-
         //try block
-        ctx.label(tryStart);
-        tryExpression.emitBalance(ctx);
+        ctx.ParameterStack.pushScope();
+        {
+            ctx.label(tryStart);
+            tryExpression.emitBalance(ctx);
+            ctx.label(tryEnd);
+        }
+        ctx.ParameterStack.popScope();
 
         List<RedirectFrame> frames = ctx.RedirectReturnControlFlow.popRedirect();
 
@@ -108,10 +111,7 @@ final class RuntimeTryFinallyExpression extends TryCatchFinallyExpression{
             finallyContinue = ctx.declareLabel();
             ctx.jmp(finallyContinue);
         }
-
-        ctx.label(tryEnd);
-        ctx.ParameterStack.popScope();
-
+        
         //finally rethrow
         Label finallyRethrow = ctx.declareLabel();
         ctx.ParameterStack.pushScope();
@@ -122,6 +122,7 @@ final class RuntimeTryFinallyExpression extends TryCatchFinallyExpression{
         }
         ctx.ParameterStack.popScope();
 
+        //finally return/break/continue
         for(RedirectFrame frame : frames){
             ctx.RedirectReturnControlFlow.declareLabel(frame.JmpLabel);
             ctx.ParameterStack.pushScope();
@@ -138,7 +139,7 @@ final class RuntimeTryFinallyExpression extends TryCatchFinallyExpression{
             ctx.ParameterStack.popScope();
         }
 
-        //finally continue
+        //finally with no redirect
         if(finallyContinue != null){
             ctx.ParameterStack.pushScope();
             {
@@ -148,6 +149,7 @@ final class RuntimeTryFinallyExpression extends TryCatchFinallyExpression{
             ctx.ParameterStack.popScope();
         }
 
+        //exception table
         ctx.exception(
             null,
             tryStart,
