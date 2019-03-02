@@ -43,13 +43,13 @@ final class ClassEmit{
 
         Class<?>[] parameterTypes = method.getParameterTypes();
         if(parameterTypes.length != parameters.length){
-            throw CompileException.parametersNotMatch(parameterTypes, parameters);
+            throw Error.parametersNotMatch(parameterTypes, parameters);
         }
         for(int i=0; i<parameters.length; i++){
             Class<?> methodParameter = parameterTypes[i];
             Class<?> inParameter = parameters[i].getExpressionType();
             if(!methodParameter.isAssignableFrom(inParameter)){
-                throw CompileException.parametersNotMatch(parameterTypes, parameters);
+                throw Error.parametersNotMatch(parameterTypes, parameters);
             }
         }
 
@@ -79,7 +79,7 @@ final class ClassEmit{
         try {
             return emit(cl, proxy.getTypeName() + name, bs);
         } catch (Throwable e) {
-            throw CompileException.emitFail(debug.getBuffer().toString(), e);
+            throw Error.emitFail(debug.getBuffer().toString(), e);
         }
     }
 

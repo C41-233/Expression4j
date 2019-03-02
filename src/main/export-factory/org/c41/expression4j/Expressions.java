@@ -30,26 +30,26 @@ public class Expressions {
         return new ParameterExpression(type);
     }
 
-    public static FieldExpression Field(Expression self, Field field){
+    public static MemberFieldExpression Field(Expression self, Field field){
         return new MemberFieldExpression(self, field);
     }
 
-    public static FieldExpression Field(Expression self, String fieldName){
+    public static MemberFieldExpression Field(Expression self, String name){
+        Class<?> type = self.getExpressionType();
         try {
-            Field field = self.getExpressionType().getField(fieldName);
+            Field field = type.getField(name);
             return Field(self, field);
         } catch (NoSuchFieldException e) {
-            throw CompileException.emitFail("field not found", e);
+            throw Error.fieldNotFound(type, name);
         }
-
     }
 
-    public static StaticFieldExpression Field(Class<System> type, String name) {
+    public static StaticFieldExpression Field(Class<?> type, String name) {
         try {
             Field field = type.getField(name);
             return new StaticFieldExpression(field);
         } catch (NoSuchFieldException e) {
-            throw CompileException.fieldNotFoundException(type, name);
+            throw Error.fieldNotFound(type, name);
         }
     }
 
@@ -90,16 +90,17 @@ public class Expressions {
             Method method = owner.getMethod(name, parameterTypes);
             return Call(method, parameters);
         } catch (NoSuchMethodException e) {
-            throw CompileException.emitFail("method not found", e);
+            throw Error.methodNotFound(owner, name);
         }
     }
 
     public static MethodCallExpression Call(Expression self, String name, Class<?>[] parameterTypes, Expression... parameters){
+        Class<?> type = self.getExpressionType();
         try {
-            Method method = self.getExpressionType().getMethod(name, parameterTypes);
+            Method method = type.getMethod(name, parameterTypes);
             return Call(self, method, parameters);
         } catch (NoSuchMethodException e) {
-            throw CompileException.emitFail("method not found", e);
+            throw Error.methodNotFound(type, name);
         }
     }
 
@@ -120,15 +121,21 @@ public class Expressions {
     }
 
     public static TryCatchFinallyExpression TryCatchFinally(Expression tryExpression, CatchBlock[] catchBlocks, Expression finallyExpression){
-        return new TryCatchFinallyExpression(tryExpression, catchBlocks.clone(), finallyExpression);
+        if(finallyExpression == null){
+            return TryCatch(tryExpression, catchBlocks);
+        }
+        if(catchBlocks == null || catchBlocks.length == 0){
+            return TryFinally(tryExpression, finallyExpression);
+        }
+        return new RuntimeTryCatchFinallyExpression(tryExpression, catchBlocks, finallyExpression);
     }
 
     public static TryCatchFinallyExpression TryCatch(Expression tryExpression, CatchBlock... catchBlocks){
-        return new TryCatchFinallyExpression(tryExpression, catchBlocks.clone(), null);
+        return new RuntimeTryCatchExpression(tryExpression, catchBlocks.clone());
     }
 
     public static TryCatchFinallyExpression TryFinally(Expression tryExpression, Expression finallyExpression){
-        return new TryCatchFinallyExpression(tryExpression, null, finallyExpression);
+        return new RuntimeTryFinallyExpression(tryExpression, finallyExpression);
     }
 
     public static ReturnExpression Return(Expression expression){
@@ -143,7 +150,22 @@ public class Expressions {
         return new ThrowExpression(expression);
     }
 
+    public static TargetLabel Label(){
+        return new TargetLabel();
+    }
+
+    public static BreakExpression Break(){
+        return new BreakExpression();
+    }
+
+    public static BreakExpression Break(TargetLabel label){
+        return new BreakExpression(label);
+    }
+
     public static ForExpression For(Expression expression1, Expression expression2, Expression expression3, Expression... bodyExpression){
-        return new ForExpression(expression1, expression2, expression3, bodyExpression.clone());
+        return new ForExpression(null, expression1, expression2, expression3, bodyExpression.clone());
+    }
+    public static ForExpression For(TargetLabel label, Expression expression1, Expression expression2, Expression expression3, Expression... bodyExpression){
+        return new ForExpression(label, expression1, expression2, expression3, bodyExpression.clone());
     }
 }

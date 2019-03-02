@@ -13,7 +13,7 @@ final class ConstructorEmit extends MethodEmit{
         try {
             ObjectConstructor = Object.class.getConstructor();
         } catch (NoSuchMethodException e) {
-            throw CompileException.emitFail("cannot find constructor", e);
+            throw Error.emitFail("cannot find constructor", e);
         }
     }
 

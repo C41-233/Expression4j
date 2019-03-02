@@ -136,7 +136,7 @@ abstract class MethodEmit {
                 dadd();
                 break;
             case Reference:
-                throw CompileException.badOperator();
+                throw Error.badOperator();
         }
     }
 
@@ -171,7 +171,7 @@ abstract class MethodEmit {
                 dsub();
                 break;
             case Reference:
-                throw CompileException.badOperator();
+                throw Error.badOperator();
         }
     }
 

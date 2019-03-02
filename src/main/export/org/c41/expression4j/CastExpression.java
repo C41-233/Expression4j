@@ -41,12 +41,12 @@ public class CastExpression extends Expression{
                         ctx.invokestatic(method);
                         return;
                     } catch (NoSuchMethodException e) {
-                        throw CompileException.emitFail("cannot find Integer.valueOf", e);
+                        throw Error.emitFail("cannot find Integer.valueOf", e);
                     }
                 }
             }
         }
-        throw CompileException.badCast(expression.getExpressionType(), leftType);
+        throw Error.badCast(expression.getExpressionType(), leftType);
     }
 
     @Override

@@ -1,6 +1,7 @@
 package org.c41.expression4j;
 
 import org.objectweb.asm.ClassVisitor;
+import org.objectweb.asm.Label;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.Type;
 
@@ -36,7 +37,7 @@ final class BodyEmit extends MethodEmit {
             ParameterExpression parameter = parameters[i];
             Class<?> inputType = inputTypes[i];
             Class<?> targetType = parameter.getExpressionType();
-            declareParameter(parameter);
+            ParameterStack.declareParameter(parameter);
             if(inputType != targetType){
                 load(parameter);
                 checkcast(targetType);
@@ -56,31 +57,23 @@ final class BodyEmit extends MethodEmit {
     }
 
     public final void load(ParameterExpression parameter){
-        load(getParameterSlot(parameter), parameter.getExpressionType());
+        load(ParameterStack.getParameterSlot(parameter), parameter.getExpressionType());
     }
 
     public final void store(ParameterExpression parameter) {
-        store(getParameterSlot(parameter), parameter.getExpressionType());
+        store(ParameterStack.getParameterSlot(parameter), parameter.getExpressionType());
     }
 
-    private final ParameterStack parameterStack = new ParameterStack();
+    public final ParameterStack ParameterStack = new ParameterStack();
 
-    public final void declareParameter(ParameterExpression parameter){
-        parameterStack.declareParameter(parameter);
+    public final RedirectControlFlow RedirectReturnControlFlow = new RedirectControlFlow();
+
+    public final JmpTargetControlFlow JmpTargetControlFlow = new JmpTargetControlFlow();
+
+    public final Label declareLabel(){
+        Label label = new Label();
+        RedirectReturnControlFlow.declareLabel(label);
+        return label;
     }
-
-    public final void pushScope(){
-        parameterStack.pushScope();
-    }
-
-    public final void popScope(){
-        parameterStack.popScope();
-    }
-
-    public final int getParameterSlot(ParameterExpression parameter){
-        return parameterStack.getParameterSlot(parameter);
-    }
-
-    public final RedirectReturnControlFlow RedirectReturnControlFlow = new RedirectReturnControlFlow();
 
 }

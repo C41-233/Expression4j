@@ -4,12 +4,14 @@ import org.objectweb.asm.Label;
 
 public class ForExpression extends Expression{
 
+    private final TargetLabel label;
     private final Expression expression1;
     private final Expression expression2;
     private final Expression expression3;
     private final Expression[] bodyExpressions;
 
-    ForExpression(Expression expression1, Expression expression2, Expression expression3, Expression[] bodyExpression){
+    ForExpression(TargetLabel label, Expression expression1, Expression expression2, Expression expression3, Expression[] bodyExpression){
+        this.label = label;
         this.expression1 = expression1;
         this.expression2 = expression2;
         this.expression3 = expression3;
@@ -18,33 +20,43 @@ public class ForExpression extends Expression{
 
     @Override
     void emitBalance(BodyEmit ctx) {
+        Label breakTarget = new Label();
+
+        if(label != null){
+            ctx.label(label.Target);
+        }
+
         Label loopStart = new Label();
         Label loopEnd = new Label();
-        ctx.pushScope();
+
+        ctx.JmpTargetControlFlow.pushJmpTarget(breakTarget, null);
+        ctx.ParameterStack.pushScope();
         {
             expression1.emitBalance(ctx);
             ctx.label(loopStart);
-            ctx.pushScope();
+            ctx.ParameterStack.pushScope();
             {
                 expression2.emitJmpIfNot(ctx, loopEnd);
             }
-            ctx.popScope();
-            ctx.pushScope();
+            ctx.ParameterStack.popScope();
+            ctx.ParameterStack.pushScope();
             {
                 for (Expression body : bodyExpressions){
                     body.emitBalance(ctx);
                 }
-                ctx.pushScope();
+                ctx.ParameterStack.pushScope();
                 {
                     expression3.emitBalance(ctx);
                 }
-                ctx.popScope();
+                ctx.ParameterStack.popScope();
             }
-            ctx.popScope();
+            ctx.ParameterStack.popScope();
             ctx.jmp(loopStart);
             ctx.label(loopEnd);
         }
-        ctx.popScope();
+        ctx.ParameterStack.popScope();
+        ctx.label(breakTarget);
+        ctx.JmpTargetControlFlow.popJmpTarget();
     }
 
     @Override

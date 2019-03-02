@@ -15,7 +15,7 @@ public class ParameterExpression extends Expression{
 
     @Override
     void emitWrite(BodyEmit ctx, Expression expression, boolean isBalance) {
-        ctx.declareParameter(this);
+        ctx.ParameterStack.declareParameter(this);
         expression.emitRead(ctx);
         if(!isBalance){
             ctx.dup(expression.getExpressionType());

@@ -44,7 +44,7 @@ final class BinaryLift {
                     return;
             }
         }
-        throw CompileException.badOperator();
+        throw Error.badOperator();
     }
 
 }

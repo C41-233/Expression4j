@@ -16,27 +16,31 @@ public class ReturnExpression extends Expression{
 
     @Override
     void emitBalance(BodyEmit ctx) {
-        Label label = ctx.RedirectReturnControlFlow.getCurrentRedirectTarget();
+        Label jmp = ctx.RedirectReturnControlFlow.redirectReturn();
         if(expression != null){
-            expression.emitRead(ctx);
-            if(label != null){
-                ctx.jmp(label);
-            }
-            else{
-                ctx.ret(expression.getExpressionType());
-            }
+            returnValue(ctx, jmp);
         }
         else{
-            if(label != null){
-                ctx.jmp(label);
-            }
-            else {
-                ctx.ret();
-            }
+            returnVoid(ctx, jmp);
         }
+    }
 
-        if(label != null){
-            ctx.RedirectReturnControlFlow.trigger();
+    private void returnValue(BodyEmit ctx, Label jmp){
+        expression.emitRead(ctx);
+        if(jmp != null){
+            ctx.jmp(jmp);
+        }
+        else{
+            ctx.ret(expression.getExpressionType());
+        }
+    }
+
+    private void returnVoid(BodyEmit ctx, Label jmp){
+        if(jmp != null){
+            ctx.jmp(jmp);
+        }
+        else {
+            ctx.ret();
         }
     }
 

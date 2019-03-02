@@ -10,12 +10,12 @@ public class BlockExpression extends Expression{
 
     @Override
     void emitBalance(BodyEmit ctx) {
-        ctx.pushScope();
+        ctx.ParameterStack.pushScope();
         for (int i = 0; i < expressions.length; i++) {
             Expression expression = expressions[i];
             expression.emitBalance(ctx);
         }
-        ctx.popScope();
+        ctx.ParameterStack.popScope();
     }
 
     @Override

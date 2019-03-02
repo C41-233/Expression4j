@@ -16,7 +16,7 @@ public class GreaterExpression extends Expression {
             ctx.if_icmpgt(label);
             return;
         }
-        throw CompileException.badOperator();
+        throw Error.badOperator();
     }
 
     @Override
@@ -27,7 +27,7 @@ public class GreaterExpression extends Expression {
             ctx.if_icmple(label);
             return;
         }
-        throw CompileException.badOperator();
+        throw Error.badOperator();
     }
 
     @Override

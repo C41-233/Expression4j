@@ -14,10 +14,10 @@ public abstract class CallExpression extends Expression{
         this.parameterTypes = method.getParameterTypes();
 
         if(parameterTypes.length > parameterExpressions.length){
-            throw CompileException.parametersNotMatch(parameterTypes, parameterExpressions);
+            throw Error.parametersNotMatch(parameterTypes, parameterExpressions);
         }
         if (!isVarArgs() && parameterTypes.length != parameterExpressions.length){
-            throw CompileException.parametersNotMatch(parameterTypes, parameterExpressions);
+            throw Error.parametersNotMatch(parameterTypes, parameterExpressions);
         }
     }
 

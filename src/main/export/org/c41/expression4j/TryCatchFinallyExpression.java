@@ -2,54 +2,56 @@ package org.c41.expression4j;
 
 import org.objectweb.asm.Label;
 
+import java.util.List;
+
 public class TryCatchFinallyExpression extends Expression {
 
+    TryCatchFinallyExpression(){
+    }
+
+    @Override
+    public Class<?> getExpressionType() {
+        return null;
+    }
+}
+
+final class RuntimeTryCatchExpression extends TryCatchFinallyExpression{
+
     private final Expression tryExpression;
-    private final Expression finallyExpression;
     private final CatchBlock[] catchBlocks;
 
-    TryCatchFinallyExpression(Expression tryExpression, CatchBlock[] catchBlocks, Expression finallyExpression){
+    RuntimeTryCatchExpression(Expression tryExpression, CatchBlock[] catchBlocks) {
         this.tryExpression = tryExpression;
         this.catchBlocks = catchBlocks;
-        this.finallyExpression = finallyExpression;
     }
 
     @Override
     void emitBalance(BodyEmit ctx) {
-        if(finallyExpression != null){
-            emitTryCatchFinally(ctx);
-        }
-        else{
-            emitTryCatch(ctx);
-        }
-    }
-
-    private void emitTryCatch(BodyEmit ctx){
-        Label tryStart = new Label();
-        Label tryEnd = new Label();
-        Label exit = new Label();
+        Label tryStart = ctx.declareLabel();
+        Label tryEnd = ctx.declareLabel();
+        Label exit = ctx.declareLabel();
 
         int catchCount = catchBlocks.length;
         Label[] catchStarts = new Label[catchCount];
         for(int i = 0; i < catchCount; i++){
-            catchStarts[i] = new Label();
+            catchStarts[i] = ctx.declareLabel();
         }
-        ctx.pushScope();
+        ctx.ParameterStack.pushScope();
         {
             ctx.label(tryStart);
             tryExpression.emitBalance(ctx);
             ctx.label(tryEnd);
             ctx.jmp(exit);
         }
-        ctx.popScope();
+        ctx.ParameterStack.popScope();
 
         for(int i = 0; i < catchCount; i++){
-            ctx.pushScope();
+            ctx.ParameterStack.pushScope();
             {
                 ctx.label(catchStarts[i]);
 
                 ParameterExpression e = Expressions.Parameter(catchBlocks[i].getTargetType());
-                ctx.declareParameter(e);
+                ctx.ParameterStack.declareParameter(e);
                 ctx.store(e);
                 for(Expression expression : catchBlocks[i].getBodyExpressions()){
                     expression.emitBalance(ctx);
@@ -59,7 +61,7 @@ public class TryCatchFinallyExpression extends Expression {
                     ctx.jmp(exit);
                 }
             }
-            ctx.popScope();
+            ctx.ParameterStack.popScope();
         }
 
         ctx.label(exit);
@@ -73,93 +75,102 @@ public class TryCatchFinallyExpression extends Expression {
             );
         }
     }
+}
 
-    /**
-     * try-catch-finally block
-     * need handle finally
-     */
-    private void emitTryCatchFinally(BodyEmit ctx){
+final class RuntimeTryFinallyExpression extends TryCatchFinallyExpression{
+
+    private final Expression tryExpression;
+    private final Expression finallyExpression;
+
+    RuntimeTryFinallyExpression(Expression tryExpression, Expression finallyExpression) {
+        this.tryExpression = tryExpression;
+        this.finallyExpression = finallyExpression;
+    }
+
+    @Override
+    void emitBalance(BodyEmit ctx) {
         //label
-        Label tryStart = new Label();
-        Label tryEnd = new Label();
+        Label tryStart = ctx.declareLabel();
+        Label tryEnd = ctx.declareLabel();
 
-        int catchCount = catchBlocks != null ? catchBlocks.length : 0;
-        Label[] catchStarts = new Label[catchCount];
-        for(int i = 0; i < catchCount; i++){
-            catchStarts[i] = new Label();
+        ctx.RedirectReturnControlFlow.pushRedirect();
+
+        ctx.ParameterStack.pushScope();
+
+        //try block
+        ctx.label(tryStart);
+        tryExpression.emitBalance(ctx);
+
+        List<RedirectFrame> frames = ctx.RedirectReturnControlFlow.popRedirect();
+
+        Label finallyContinue = null;
+        if(frames.size() == 0){
+            finallyContinue = ctx.declareLabel();
+            ctx.jmp(finallyContinue);
         }
-        Label finallyStart = new Label();
-        Label finallyRethrowStart = new Label();
 
-        //try
-        ctx.RedirectReturnControlFlow.pushRedirect(finallyStart);
-        ctx.pushScope();
-        {
-            ctx.label(tryStart);
-            tryExpression.emitBalance(ctx);
-            ctx.label(tryEnd);
-            ctx.jmp(finallyStart);
-        }
-        ctx.popScope();
-
-        //catch
-        for(int i = 0; i < catchCount; i++){
-            ctx.pushScope();
-            {
-                ctx.label(catchStarts[i]);
-
-                ParameterExpression e = Expressions.Parameter(catchBlocks[i].getTargetType());
-                ctx.declareParameter(e);
-                ctx.store(e);
-                for(Expression expression : catchBlocks[i].getBodyExpressions()){
-                    expression.emitBalance(ctx);
-                }
-
-                ctx.jmp(finallyStart);
-            }
-            ctx.popScope();
-        }
-        boolean alreadyReturn = ctx.RedirectReturnControlFlow.isTriggered();
-        ctx.RedirectReturnControlFlow.popRedirect();
+        ctx.label(tryEnd);
+        ctx.ParameterStack.popScope();
 
         //finally rethrow
-        ctx.pushScope();
+        Label finallyRethrow = ctx.declareLabel();
+        ctx.ParameterStack.pushScope();
         {
-            ctx.label(finallyRethrowStart);
+            ctx.label(finallyRethrow);
             finallyExpression.emitBalance(ctx);
             ctx.athrow();
         }
-        ctx.popScope();
+        ctx.ParameterStack.popScope();
 
-        //finally
-        ctx.pushScope();
-        {
-            ctx.label(finallyStart);
-            finallyExpression.emitBalance(ctx);
-            if(alreadyReturn){
-                ctx.ret(ctx.getReturnType());
+        for(RedirectFrame frame : frames){
+            ctx.RedirectReturnControlFlow.declareLabel(frame.JmpLabel);
+            ctx.ParameterStack.pushScope();
+            {
+                ctx.label(frame.JmpLabel);
+                finallyExpression.emitBalance(ctx);
+                if(frame.RedirectLabel == null){
+                    ctx.ret(ctx.getReturnType());
+                }
+                else{
+                    ctx.jmp(frame.RedirectLabel);
+                }
             }
+            ctx.ParameterStack.popScope();
         }
-        ctx.popScope();
 
-        for(int i=0; i < catchCount; i++){
-            ctx.exception(
-                catchBlocks[i].getTargetType(),
-                tryStart,
-                tryEnd,
-                catchStarts[i]
-            );
+        //finally continue
+        if(finallyContinue != null){
+            ctx.ParameterStack.pushScope();
+            {
+                ctx.label(finallyContinue);
+                finallyExpression.emitBalance(ctx);
+            }
+            ctx.ParameterStack.popScope();
         }
+
         ctx.exception(
             null,
             tryStart,
             tryEnd,
-            finallyRethrowStart
+            finallyRethrow
+        );
+    }
+}
+
+final class RuntimeTryCatchFinallyExpression extends TryCatchFinallyExpression{
+
+    private final RuntimeTryFinallyExpression delegate;
+
+    RuntimeTryCatchFinallyExpression(Expression tryExpression, CatchBlock[] catchBlocks, Expression finallyExpression){
+        this.delegate = new RuntimeTryFinallyExpression(
+            new RuntimeTryCatchExpression(tryExpression, catchBlocks),
+            finallyExpression
         );
     }
 
     @Override
-    public Class<?> getExpressionType() {
-        return null;
+    void emitBalance(BodyEmit ctx) {
+        delegate.emitBalance(ctx);
     }
+
 }

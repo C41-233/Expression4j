@@ -5,16 +5,16 @@ import org.objectweb.asm.Label;
 public abstract class Expression {
 
     void emitRead(BodyEmit ctx){
-        throw CompileException.badOperator();
+        throw Error.badOperator();
     }
 
-    void emitBalance(BodyEmit ctx) { throw CompileException.badOperator(); }
+    void emitBalance(BodyEmit ctx) { throw Error.badOperator(); }
 
-    void emitWrite(BodyEmit ctx, Expression value, boolean isBalance){ throw CompileException.writeValueExpression();}
+    void emitWrite(BodyEmit ctx, Expression value, boolean isBalance){ throw Error.writeValueExpression();}
 
-    void emitJmpIf(BodyEmit ctx, Label label){ throw CompileException.badOperator(); }
+    void emitJmpIf(BodyEmit ctx, Label label){ throw Error.badOperator(); }
 
-    void emitJmpIfNot(BodyEmit ctx, Label label){ throw CompileException.badOperator(); }
+    void emitJmpIfNot(BodyEmit ctx, Label label){ throw Error.badOperator(); }
 
     public abstract Class<?> getExpressionType();
 
