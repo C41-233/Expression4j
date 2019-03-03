@@ -19,4 +19,9 @@ public class AddExpression extends Expression{
     public Class<?> getExpressionType() {
         return lift.LiftType;
     }
+
+    @Override
+    void toString(ClassStringBuilder sb) {
+        throw Error.badOperator();
+    }
 }

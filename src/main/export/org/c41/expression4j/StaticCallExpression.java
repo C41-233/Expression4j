@@ -19,4 +19,8 @@ public class StaticCallExpression extends CallExpression{
         return ((Method)method).getReturnType();
     }
 
+    @Override
+    void toString(ClassStringBuilder sb) {
+        throw Error.badOperator();
+    }
 }

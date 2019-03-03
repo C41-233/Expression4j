@@ -42,4 +42,8 @@ public class BreakExpression extends Expression{
         }
     }
 
+    @Override
+    void toString(ClassStringBuilder sb) {
+        throw Error.badOperator();
+    }
 }

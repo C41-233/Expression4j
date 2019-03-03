@@ -33,4 +33,8 @@ public class ArrayIndexExpression extends Expression{
         return array.getExpressionType().getComponentType();
     }
 
+    @Override
+    void toString(ClassStringBuilder sb) {
+        throw Error.badOperator();
+    }
 }

@@ -53,4 +53,9 @@ public class CastExpression extends Expression{
     public Class<?> getExpressionType() {
         return leftType;
     }
+
+    @Override
+    void toString(ClassStringBuilder sb) {
+        throw Error.badOperator();
+    }
 }

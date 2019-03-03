@@ -17,4 +17,9 @@ public class StringConstantExpression extends Expression{
     public Class<?> getExpressionType() {
         return String.class;
     }
+
+    @Override
+    void toString(ClassStringBuilder sb) {
+        throw Error.badOperator();
+    }
 }

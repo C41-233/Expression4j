@@ -20,4 +20,9 @@ public class NewArrayExpression extends Expression{
     public Class<?> getExpressionType() {
         return null;
     }
+
+    @Override
+    void toString(ClassStringBuilder sb) {
+        throw Error.badOperator();
+    }
 }

@@ -18,4 +18,11 @@ public abstract class Expression {
 
     public abstract Class<?> getExpressionType();
 
+    @Override
+    public String toString() {
+        return super.toString();
+    }
+
+    abstract void toString(ClassStringBuilder sb);
+
 }

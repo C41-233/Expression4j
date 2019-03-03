@@ -13,4 +13,9 @@ public class EmptyExpression extends Expression{
     public Class<?> getExpressionType() {
         return null;
     }
+
+    @Override
+    void toString(ClassStringBuilder sb) {
+        throw Error.badOperator();
+    }
 }

@@ -28,4 +28,8 @@ public class ParameterExpression extends Expression{
         return type;
     }
 
+    @Override
+    void toString(ClassStringBuilder sb) {
+        throw Error.badOperator();
+    }
 }

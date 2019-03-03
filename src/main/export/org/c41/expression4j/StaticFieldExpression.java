@@ -29,4 +29,9 @@ public class StaticFieldExpression extends FieldExpression{
         expression.emitRead(ctx);
         //todo
     }
+
+    @Override
+    void toString(ClassStringBuilder sb) {
+        throw Error.badOperator();
+    }
 }

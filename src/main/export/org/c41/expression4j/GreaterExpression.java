@@ -34,4 +34,9 @@ public class GreaterExpression extends Expression {
     public Class<?> getExpressionType() {
         return boolean.class;
     }
+
+    @Override
+    void toString(ClassStringBuilder sb) {
+        throw Error.badOperator();
+    }
 }

@@ -23,4 +23,8 @@ public class BlockExpression extends Expression{
         return null;
     }
 
+    @Override
+    void toString(ClassStringBuilder sb) {
+        throw Error.badOperator();
+    }
 }

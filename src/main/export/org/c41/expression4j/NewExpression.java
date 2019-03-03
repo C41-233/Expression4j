@@ -22,4 +22,8 @@ public class NewExpression extends CallExpression{
         ctx.invokespecial(constructor);
     }
 
+    @Override
+    void toString(ClassStringBuilder sb) {
+        throw Error.badOperator();
+    }
 }

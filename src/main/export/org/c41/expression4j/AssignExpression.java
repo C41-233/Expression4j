@@ -32,4 +32,9 @@ public class AssignExpression extends Expression {
     public Class<?> getExpressionType() {
         return left.getExpressionType();
     }
+
+    @Override
+    void toString(ClassStringBuilder sb) {
+        throw Error.badOperator();
+    }
 }

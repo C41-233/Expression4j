@@ -19,6 +19,10 @@ public class MethodCallExpression extends CallExpression{
     }
 
     @Override
+    void toString(ClassStringBuilder sb) {
+    }
+
+    @Override
     public Class<?> getReturnType() {
         return ((Method)method).getReturnType();
     }

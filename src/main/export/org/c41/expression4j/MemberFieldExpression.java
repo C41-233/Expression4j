@@ -42,4 +42,9 @@ public class MemberFieldExpression extends FieldExpression{
     public Class<?> getExpressionType() {
         return field.getType();
     }
+
+    @Override
+    void toString(ClassStringBuilder sb) {
+        throw Error.badOperator();
+    }
 }

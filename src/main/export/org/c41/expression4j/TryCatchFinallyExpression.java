@@ -13,6 +13,11 @@ public class TryCatchFinallyExpression extends Expression {
     public Class<?> getExpressionType() {
         return null;
     }
+
+    @Override
+    void toString(ClassStringBuilder sb) {
+        throw Error.badOperator();
+    }
 }
 
 final class RuntimeTryCatchExpression extends TryCatchFinallyExpression{
@@ -111,7 +116,7 @@ final class RuntimeTryFinallyExpression extends TryCatchFinallyExpression{
             finallyContinue = ctx.declareLabel();
             ctx.jmp(finallyContinue);
         }
-        
+
         //finally rethrow
         Label finallyRethrow = ctx.declareLabel();
         ctx.ParameterStack.pushScope();

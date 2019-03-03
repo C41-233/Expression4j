@@ -64,4 +64,8 @@ public class ForExpression extends Expression{
         return null;
     }
 
+    @Override
+    void toString(ClassStringBuilder sb) {
+        throw Error.badOperator();
+    }
 }

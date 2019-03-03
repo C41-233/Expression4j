@@ -10,4 +10,9 @@ public class IntConstantExpression extends IntegerConstantExpression{
     public Class<?> getExpressionType() {
         return int.class;
     }
+
+    @Override
+    void toString(ClassStringBuilder sb) {
+        throw Error.badOperator();
+    }
 }
