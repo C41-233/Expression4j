@@ -8,7 +8,7 @@ final class Error {
     }
 
     public static CompileException writeValueExpression() {
-        return new CompileException("value expression cannot Assign");
+        return new CompileException("value expression cannot Declare");
     }
 
     public static CompileException badOperator() {

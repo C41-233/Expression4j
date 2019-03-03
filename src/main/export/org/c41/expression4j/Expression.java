@@ -20,9 +20,11 @@ public abstract class Expression {
 
     @Override
     public String toString() {
-        return super.toString();
+        ClassStringBuilder sb = new ClassStringBuilder();
+        toString(sb, 0);
+        return sb.toString();
     }
 
-    abstract void toString(ClassStringBuilder sb);
+    abstract void toString(ClassStringBuilder sb, int mask);
 
 }

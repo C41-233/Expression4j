@@ -65,7 +65,7 @@ public class ForExpression extends Expression{
     }
 
     @Override
-    void toString(ClassStringBuilder sb) {
+    void toString(ClassStringBuilder sb, int mask) {
         throw Error.badOperator();
     }
 }

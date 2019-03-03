@@ -20,12 +20,14 @@ final class ParameterStack {
         }
     }
 
-    public final void declareParameter(ParameterExpression parameter){
-        if(getParameterSlotInternal(parameter) != null){
-            return;
+    public final int declareParameter(ParameterExpression parameter){
+        Integer slot = getParameterSlotInternal(parameter);
+        if(slot != null){
+            return slot;
         }
         parameters.add(new ParameterSlot(parameter, nextSlot, currentStack));
         nextSlot += TypeUtils.getSlotCount(parameter.getExpressionType());
+        return parameters.size();
     }
 
     public final void pushScope(){

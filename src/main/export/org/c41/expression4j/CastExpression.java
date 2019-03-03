@@ -55,7 +55,14 @@ public class CastExpression extends Expression{
     }
 
     @Override
-    void toString(ClassStringBuilder sb) {
-        throw Error.badOperator();
+    void toString(ClassStringBuilder sb, int mask) {
+        if(CodeStyle.is(mask, CodeStyle.Advance)){
+            sb.append('(');
+        }
+        sb.append('(').append(leftType.getSimpleName()).append(')');
+        expression.toString(sb, CodeStyle.Advance);
+        if(CodeStyle.is(mask, CodeStyle.Advance)){
+            sb.append(')');
+        }
     }
 }

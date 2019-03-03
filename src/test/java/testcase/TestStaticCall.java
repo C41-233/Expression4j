@@ -13,11 +13,12 @@ public class TestStaticCall {
     public void sin() throws NoSuchMethodException {
         ParameterExpression x = Expressions.Parameter(double.class);
         FuncDD r = Expressions.Compile(FuncDD.class,
-                Expressions.Call(
-                        Math.class.getMethod("sin", double.class),
-                        x
-                ),
-                x);
+            Expressions.Call(
+                Math.class.getMethod("sin", double.class),
+                x
+            ),
+            x
+        );
         Assert.assertEquals(Math.sin(40), r.invoke(40), 0);
     }
 

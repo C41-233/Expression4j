@@ -1,0 +1,8 @@
+public void invoke(){
+	try{
+		TestExceptionHandler.runTry();
+	}
+	catch(Exception local$1){
+		TestExceptionHandler.runCatch();
+	}
+}

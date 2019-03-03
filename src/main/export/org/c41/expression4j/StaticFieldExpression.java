@@ -31,7 +31,7 @@ public class StaticFieldExpression extends FieldExpression{
     }
 
     @Override
-    void toString(ClassStringBuilder sb) {
+    void toString(ClassStringBuilder sb, int mask) {
         throw Error.badOperator();
     }
 }

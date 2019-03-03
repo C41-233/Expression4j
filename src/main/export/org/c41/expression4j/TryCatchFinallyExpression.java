@@ -15,7 +15,7 @@ public class TryCatchFinallyExpression extends Expression {
     }
 
     @Override
-    void toString(ClassStringBuilder sb) {
+    void toString(ClassStringBuilder sb, int mask) {
         throw Error.badOperator();
     }
 }
@@ -55,7 +55,7 @@ final class RuntimeTryCatchExpression extends TryCatchFinallyExpression{
             {
                 ctx.label(catchStarts[i]);
 
-                ParameterExpression e = Expressions.Parameter(catchBlocks[i].getTargetType());
+                ParameterExpression e = catchBlocks[i].getExceptionParameter();
                 ctx.ParameterStack.declareParameter(e);
                 ctx.store(e);
                 for(Expression expression : catchBlocks[i].getBodyExpressions()){
@@ -79,6 +79,34 @@ final class RuntimeTryCatchExpression extends TryCatchFinallyExpression{
                 catchStarts[i]
             );
         }
+    }
+
+    @Override
+    void toString(ClassStringBuilder sb, int mask) {
+        sb.appendLine("try{");
+        sb.pushIndent();
+        {
+            tryExpression.toString(sb, CodeStyle.Statement | CodeStyle.AlreadyBlock);
+            sb.appendLine();
+        }
+        sb.popIndent();
+        for(CatchBlock catchBlock : catchBlocks){
+            ParameterExpression e = catchBlock.getExceptionParameter();
+            sb.appendLine("}");
+            sb.append("catch(")
+                .append(e.getExpressionType().getSimpleName())
+                .append(' ')
+                .append(e.getName())
+                .append("){")
+                .appendLine();
+            sb.pushIndent();
+            for(Expression expression : catchBlock.getBodyExpressions()){
+                expression.toString(sb, CodeStyle.Statement);
+                sb.appendLine();
+            }
+            sb.popIndent();
+        }
+        sb.append('}');
     }
 }
 
@@ -168,11 +196,18 @@ final class RuntimeTryCatchFinallyExpression extends TryCatchFinallyExpression{
 
     private final RuntimeTryFinallyExpression delegate;
 
+    private final Expression tryExpression;
+    private final CatchBlock[] catchBlocks;
+    private final Expression finallyExpression;
+
     RuntimeTryCatchFinallyExpression(Expression tryExpression, CatchBlock[] catchBlocks, Expression finallyExpression){
         this.delegate = new RuntimeTryFinallyExpression(
             new RuntimeTryCatchExpression(tryExpression, catchBlocks),
             finallyExpression
         );
+        this.tryExpression = tryExpression;
+        this.catchBlocks = catchBlocks;
+        this.finallyExpression = finallyExpression;
     }
 
     @Override
@@ -180,4 +215,13 @@ final class RuntimeTryCatchFinallyExpression extends TryCatchFinallyExpression{
         delegate.emitBalance(ctx);
     }
 
+    @Override
+    void toString(ClassStringBuilder sb, int mask) {
+        sb.appendLine("try{");
+        sb.pushIndent();
+        {
+            tryExpression.toString(sb, CodeStyle.AlreadyBlock);
+        }
+        sb.popIndent();
+    }
 }

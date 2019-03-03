@@ -3,6 +3,7 @@ package org.c41.expression4j;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.sql.ParameterMetaData;
 
 public class Expressions {
 
@@ -28,6 +29,10 @@ public class Expressions {
 
     public static ParameterExpression Parameter(Class<?> type){
         return new ParameterExpression(type);
+    }
+
+    public static ParameterExpression Parameter(Class<?> type, String name){
+        return new ParameterExpression(type, name);
     }
 
     public static MemberFieldExpression Field(Expression self, Field field){

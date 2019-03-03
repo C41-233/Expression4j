@@ -15,7 +15,7 @@ final class BodyEmit extends MethodEmit {
 
     protected BodyEmit(ClassVisitor writer, Method method, Expression body, ParameterExpression[] parameters) {
         super(writer.visitMethod(
-            Opcodes.ACC_PUBLIC,
+            Opcodes.ACC_PUBLIC | Opcodes.ACC_FINAL,
             method.getName(),
             Type.getMethodDescriptor(method),
             null,
@@ -76,4 +76,42 @@ final class BodyEmit extends MethodEmit {
         return label;
     }
 
+    @Override
+    public String toString() {
+        ClassStringBuilder sb = new ClassStringBuilder();
+        sb.append("public ")
+                .append(method.getReturnType().getSimpleName())
+                .append(' ')
+                .append(method.getName())
+        ;
+        sb.append('(');
+        for (int i = 0; i < parameters.length; i++) {
+            ParameterExpression expression = parameters[i];
+            sb.append(expression.getExpressionType().getSimpleName()).append(' ');
+            expression.toString(sb, 0);
+            if(i != parameters.length - 1){
+                sb.append(", ");
+            }
+        }
+        sb.append(')');
+        sb.appendLine("{");
+
+        Class<?> stackType = body.getExpressionType();
+
+        sb.pushIndent();
+        {
+            if(stackType == null){
+                body.toString(sb, CodeStyle.AlreadyBlock);
+            }
+            else{
+                sb.append("return ");
+                body.toString(sb, CodeStyle.AlreadyBlock | CodeStyle.Statement);
+            }
+        }
+        sb.popIndent();
+        sb.appendLine();
+        sb.append("}");
+
+        return sb.toString();
+    }
 }

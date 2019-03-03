@@ -23,7 +23,7 @@ public class NewExpression extends CallExpression{
     }
 
     @Override
-    void toString(ClassStringBuilder sb) {
+    void toString(ClassStringBuilder sb, int mask) {
         throw Error.badOperator();
     }
 }

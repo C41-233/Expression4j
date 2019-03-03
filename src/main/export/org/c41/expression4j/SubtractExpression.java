@@ -21,7 +21,15 @@ public class SubtractExpression extends Expression{
     }
 
     @Override
-    void toString(ClassStringBuilder sb) {
-        throw Error.badOperator();
+    void toString(ClassStringBuilder sb, int mask) {
+        if(CodeStyle.is(mask, CodeStyle.Advance)){
+            sb.append('(');
+        }
+        lift.Left.toString(sb, CodeStyle.Advance);
+        sb.append(" - ");
+        lift.Right.toString(sb, CodeStyle.Advance);
+        if(CodeStyle.is(mask, CodeStyle.Advance)){
+            sb.append(')');
+        }
     }
 }

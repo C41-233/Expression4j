@@ -4,6 +4,7 @@ import org.c41.expression4j.Expressions;
 import org.c41.expression4j.ParameterExpression;
 import org.junit.Assert;
 import org.junit.Test;
+import testcase.template.TemplateLoader;
 
 public class TestField {
 
@@ -23,8 +24,8 @@ public class TestField {
      */
     @Test
     public void testSet() throws NoSuchFieldException {
-        ParameterExpression x = Expressions.Parameter(Blob.class);
-        ParameterExpression y = Expressions.Parameter(int.class);
+        ParameterExpression x = Expressions.Parameter(Blob.class, "x");
+        ParameterExpression y = Expressions.Parameter(int.class, "y");
         BlobSetter r = Expressions.Compile(BlobSetter.class,
             Expressions.Assign(
                 Expressions.Field(x, Blob.class.getField("value")),
@@ -36,6 +37,8 @@ public class TestField {
         Assert.assertEquals(1, b.value);
         r.invoke(b, 2);
         Assert.assertEquals(2, b.value);
+
+        Assert.assertEquals(TemplateLoader.load("TestField.testSet"), r.toString());
     }
 
     /*
@@ -46,9 +49,9 @@ public class TestField {
      */
     @Test
     public void testSwap(){
-        ParameterExpression a = Expressions.Parameter(Blob.class);
-        ParameterExpression b = Expressions.Parameter(Blob.class);
-        ParameterExpression tmp = Expressions.Parameter(int.class);
+        ParameterExpression a = Expressions.Parameter(Blob.class, "a");
+        ParameterExpression b = Expressions.Parameter(Blob.class, "b");
+        ParameterExpression tmp = Expressions.Parameter(int.class, "tmp");
         Action2<Blob, Blob> r = Expressions.Compile(
             Action2.class,
             Expressions.Block(
@@ -68,6 +71,11 @@ public class TestField {
         r.invoke(x, y);
         Assert.assertEquals(200, x.value);
         Assert.assertEquals(100, y.value);
+
+        Assert.assertEquals(
+        "public void invoke(Blob a, Blob b){\n\tint tmp = a.value;\n\ta.value = b.value;\n\tb.value = tmp;\n}",
+            r.toString()
+        );
     }
 
 }

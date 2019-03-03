@@ -44,7 +44,14 @@ public class MemberFieldExpression extends FieldExpression{
     }
 
     @Override
-    void toString(ClassStringBuilder sb) {
-        throw Error.badOperator();
+    void toString(ClassStringBuilder sb, int mask) {
+        if(CodeStyle.is(mask, CodeStyle.Advance)){
+            sb.append('(');
+        }
+        self.toString(sb, CodeStyle.Advance);
+        sb.append('.').append(field.getName());
+        if(CodeStyle.is(mask, CodeStyle.Advance)){
+            sb.append(')');
+        }
     }
 }

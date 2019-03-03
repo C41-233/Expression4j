@@ -34,7 +34,15 @@ public class AssignExpression extends Expression {
     }
 
     @Override
-    void toString(ClassStringBuilder sb) {
-        throw Error.badOperator();
+    void toString(ClassStringBuilder sb, int mask) {
+        if(CodeStyle.is(mask, CodeStyle.Advance)){
+            sb.append('(');
+        }
+        left.toString(sb, CodeStyle.Declare);
+        sb.append(" = ");
+        right.toString(sb, CodeStyle.None);
+        if(CodeStyle.is(mask, CodeStyle.Advance)){
+            sb.append(')');
+        }
     }
 }

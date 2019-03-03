@@ -49,6 +49,8 @@ public class TestCalculate {
                 x, y);
         Assert.assertEquals(100 + 100 - 200 , r.invoke(100, 200));
         Assert.assertEquals(200 + 200 - 100, r.invoke(200, 100));
+
+        System.out.println(r);
     }
 
     @Test

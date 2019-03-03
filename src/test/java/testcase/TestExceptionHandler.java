@@ -6,6 +6,7 @@ import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import testcase.template.TemplateLoader;
 
 import java.io.IOException;
 import java.lang.reflect.Method;
@@ -359,6 +360,8 @@ public class TestExceptionHandler {
         );
         r.invoke();
         Assert.assertEquals("try", sb.toString());
+
+        Assert.assertEquals(TemplateLoader.load("TestExceptionHandler.tryCatch1"), r.toString());
     }
 
     @Test

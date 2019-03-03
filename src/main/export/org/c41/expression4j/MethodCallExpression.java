@@ -19,7 +19,7 @@ public class MethodCallExpression extends CallExpression{
     }
 
     @Override
-    void toString(ClassStringBuilder sb) {
+    void toString(ClassStringBuilder sb, int mask) {
     }
 
     @Override

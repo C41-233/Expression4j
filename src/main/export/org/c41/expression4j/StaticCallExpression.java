@@ -20,7 +20,20 @@ public class StaticCallExpression extends CallExpression{
     }
 
     @Override
-    void toString(ClassStringBuilder sb) {
-        throw Error.badOperator();
+    void toString(ClassStringBuilder sb, int mask) {
+        Class<?> type = method.getDeclaringClass();
+        sb.append(type.getSimpleName()).append('.').append(method.getName());
+        sb.append('(');
+        for (int i = 0; i < parameterExpressions.length; i++) {
+            Expression expression = parameterExpressions[i];
+            expression.toString(sb, CodeStyle.Advance);
+            if(i != parameterExpressions.length - 1){
+                sb.append(", ");
+            }
+        }
+        sb.append(')');
+        if(CodeStyle.is(mask, CodeStyle.Statement)){
+            sb.append(';');
+        }
     }
 }
