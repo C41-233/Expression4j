@@ -5,18 +5,16 @@ import java.util.List;
 
 public class CatchBlock {
 
-    private final Class<?> targetType;
     private final List<Expression> expressions;
     private final ParameterExpression parameterExpression;
 
-    CatchBlock(Class<?> targetType, Expression[] expressions){
-        this.targetType = targetType;
+    CatchBlock(ParameterExpression parameterExpression, Expression[] expressions){
         this.expressions = Arrays.asList(expressions);
-        this.parameterExpression = Expressions.Parameter(targetType);
+        this.parameterExpression = parameterExpression;
     }
 
     public Class<?> getTargetType(){
-        return targetType;
+        return parameterExpression.getExpressionType();
     }
 
     public ParameterExpression getExceptionParameter(){

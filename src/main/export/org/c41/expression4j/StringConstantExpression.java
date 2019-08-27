@@ -20,6 +20,8 @@ public class StringConstantExpression extends Expression{
 
     @Override
     void toString(ClassStringBuilder sb, int mask) {
-        throw Error.badOperator();
+        sb.append("\"");
+        sb.append(value);
+        sb.append("\"");
     }
 }

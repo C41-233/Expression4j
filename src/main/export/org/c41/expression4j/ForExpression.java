@@ -66,6 +66,19 @@ public class ForExpression extends Expression{
 
     @Override
     void toString(ClassStringBuilder sb, int mask) {
-        throw Error.badOperator();
+        sb.append("for(");
+        expression1.toString(sb, CodeStyle.None);
+        sb.append(";");
+        expression2.toString(sb, CodeStyle.None);
+        sb.append(";");
+        expression3.toString(sb, CodeStyle.None);
+        sb.append(")");
+        sb.appendLine("{");
+        sb.pushIndent();
+        for(Expression expression : bodyExpressions){
+            expression.toString(sb, CodeStyle.AlreadyBlock);
+        }
+        sb.popIndent();
+        sb.appendLine();
     }
 }

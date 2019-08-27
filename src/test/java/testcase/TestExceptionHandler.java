@@ -355,7 +355,7 @@ public class TestExceptionHandler {
         Action r = Expressions.Compile(Action.class,
             Expressions.TryCatch(
                 Expressions.Call(TestExceptionHandler.class.getMethod("runTry")),
-                Expressions.CatchBlock(Exception.class, Expressions.Call(TestExceptionHandler.class.getMethod("runCatch")))
+                Expressions.CatchBlock(Expressions.Parameter(Exception.class, "e"), Expressions.Call(TestExceptionHandler.class.getMethod("runCatch")))
             )
         );
         r.invoke();

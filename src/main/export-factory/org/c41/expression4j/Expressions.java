@@ -3,7 +3,6 @@ package org.c41.expression4j;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import java.sql.ParameterMetaData;
 
 public class Expressions {
 
@@ -117,8 +116,15 @@ public class Expressions {
         return new NewArrayExpression(elementType, length);
     }
 
+    public static CatchBlock CatchBlock(ParameterExpression parameterExpression, Expression... expressions){
+        return new CatchBlock(parameterExpression, expressions);
+    }
+
     public static CatchBlock CatchBlock(Class<?> targetType, Expression... expressions){
-        return new CatchBlock(targetType, expressions);
+        return new CatchBlock(
+            Expressions.Parameter(targetType),
+            expressions
+        );
     }
 
     public static TryCatchFinallyExpression TryCatchFinally(Expression tryExpression, Expression finallyExpression, CatchBlock... catchBlocks){

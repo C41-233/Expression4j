@@ -37,6 +37,8 @@ public class GreaterExpression extends Expression {
 
     @Override
     void toString(ClassStringBuilder sb, int mask) {
-        throw Error.badOperator();
+        lift.Left.toString(sb, CodeStyle.None);
+        sb.append(" > ");
+        lift.Right.toString(sb, CodeStyle.None);
     }
 }

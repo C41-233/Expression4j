@@ -24,6 +24,15 @@ public class NewExpression extends CallExpression{
 
     @Override
     void toString(ClassStringBuilder sb, int mask) {
-        throw Error.badOperator();
+        sb.append("new ");
+        sb.append(method.getDeclaringClass().getName());
+        sb.append("(");
+        for(int i=0; i<parameterExpressions.length; i++){
+            parameterExpressions[i].toString(sb, CodeStyle.None);
+            if(i < parameterExpressions.length - 1){
+                sb.append(", ");
+            }
+        }
+        sb.append(")");
     }
 }

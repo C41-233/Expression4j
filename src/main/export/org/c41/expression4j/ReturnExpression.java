@@ -51,6 +51,12 @@ public class ReturnExpression extends Expression{
 
     @Override
     void toString(ClassStringBuilder sb, int mask) {
-        throw Error.badOperator();
+        if(expression == null) {
+            sb.append("return;");
+        }
+        else{
+            sb.append("return ");
+            expression.toString(sb, CodeStyle.None);
+        }
     }
 }

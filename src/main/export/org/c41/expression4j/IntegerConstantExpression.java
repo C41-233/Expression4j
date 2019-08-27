@@ -2,7 +2,7 @@ package org.c41.expression4j;
 
 public abstract class IntegerConstantExpression extends Expression{
 
-    private final int value;
+    final int value;
 
     IntegerConstantExpression(int value){
 

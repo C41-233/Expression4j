@@ -44,6 +44,6 @@ public class BreakExpression extends Expression{
 
     @Override
     void toString(ClassStringBuilder sb, int mask) {
-        throw Error.badOperator();
+        sb.appendLine("break;");
     }
 }

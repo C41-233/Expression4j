@@ -190,6 +190,26 @@ final class RuntimeTryFinallyExpression extends TryCatchFinallyExpression{
             finallyRethrow
         );
     }
+
+    @Override
+    void toString(ClassStringBuilder sb, int mask) {
+        sb.appendLine("try{");
+        sb.pushIndent();
+        {
+            tryExpression.toString(sb, CodeStyle.Statement | CodeStyle.AlreadyBlock);
+            sb.appendLine();
+        }
+        sb.popIndent();
+        sb.appendLine('}');
+        sb.appendLine("finally{");
+        sb.pushIndent();
+        {
+            finallyExpression.toString(sb, CodeStyle.Statement | CodeStyle.AlreadyBlock);
+        }
+        sb.appendLine();
+        sb.popIndent();
+        sb.append("}");
+    }
 }
 
 final class RuntimeTryCatchFinallyExpression extends TryCatchFinallyExpression{
@@ -220,8 +240,33 @@ final class RuntimeTryCatchFinallyExpression extends TryCatchFinallyExpression{
         sb.appendLine("try{");
         sb.pushIndent();
         {
-            tryExpression.toString(sb, CodeStyle.AlreadyBlock);
+            tryExpression.toString(sb, CodeStyle.Statement | CodeStyle.AlreadyBlock);
+            sb.appendLine();
         }
         sb.popIndent();
+        for(CatchBlock catchBlock : catchBlocks){
+            ParameterExpression e = catchBlock.getExceptionParameter();
+            sb.appendLine("}");
+            sb.append("catch(")
+                    .append(e.getExpressionType().getSimpleName())
+                    .append(' ')
+                    .append(e.getName())
+                    .append("){")
+                    .appendLine();
+            sb.pushIndent();
+            for(Expression expression : catchBlock.getBodyExpressions()){
+                expression.toString(sb, CodeStyle.Statement);
+                sb.appendLine();
+            }
+            sb.popIndent();
+        }
+        sb.appendLine('}');
+        sb.appendLine("finally{");
+        sb.pushIndent();
+        {
+            finallyExpression.toString(sb, CodeStyle.Statement | CodeStyle.AlreadyBlock);
+        }
+        sb.popIndent();
+        sb.append("}");
     }
 }

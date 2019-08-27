@@ -21,6 +21,7 @@ public class ThrowExpression extends Expression{
 
     @Override
     void toString(ClassStringBuilder sb, int mask) {
-        throw Error.badOperator();
+        sb.append("throw ");
+        expression.toString(sb, CodeStyle.None);
     }
 }

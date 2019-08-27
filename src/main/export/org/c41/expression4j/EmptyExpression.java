@@ -16,6 +16,5 @@ public class EmptyExpression extends Expression{
 
     @Override
     void toString(ClassStringBuilder sb, int mask) {
-        throw Error.badOperator();
     }
 }

@@ -2,7 +2,7 @@ public void invoke(){
 	try{
 		TestExceptionHandler.runTry();
 	}
-	catch(Exception local$1){
+	catch(Exception e){
 		TestExceptionHandler.runCatch();
 	}
 }
